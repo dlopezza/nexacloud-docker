@@ -105,25 +105,6 @@ resource "aws_route_table_association" "private_subnet_route" {
   route_table_id = aws_route_table.private_route_table.id
 }
 
-resource "aws_security_group" "myapp_sg" {
-  name        = "myapp_sg"
-  description = "Security group for myapp"
-  vpc_id      = aws_vpc.vpc_terraproject.id
-
-  ingress {
-    from_port   = 3000
-    to_port     = 3000
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-}
 
 resource "aws_s3_bucket" "my_app_bucket" {
   bucket = "nexacloudenvironmentsaver"
@@ -182,7 +163,7 @@ resource "aws_elastic_beanstalk_environment" "my_env" {
   setting {
     namespace = "aws:ec2:vpc"
     name      = "Subnets"
-    value     = "${aws_subnet.public_subnet.id}"  # Use only the private subnet for EC2 instances
+    value     = "${aws_subnet.private_subnet.id}"  # Use only the private subnet for EC2 instances
   }
 
   setting {
@@ -195,11 +176,5 @@ resource "aws_elastic_beanstalk_environment" "my_env" {
     namespace = "aws:ec2:vpc"
     name      = "AssociatePublicIpAddress"
     value     = "false"  # Set to false for private instances
-  }
-
-  setting {
-    namespace = "aws:autoscaling:launchconfiguration"
-    name      = "SecurityGroups"
-    value     = aws_security_group.myapp_sg.id
   }
 }
