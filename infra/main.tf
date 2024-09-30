@@ -194,7 +194,7 @@ resource "aws_elastic_beanstalk_environment" "my_env" {
   setting {
     namespace = "aws:ec2:vpc"
     name      = "AssociatePublicIpAddress"
-    value     = "false"  # Set to false for private instances
+    value     = "true"  # Set to false for private instances
   }
 
   setting {
