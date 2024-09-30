@@ -78,7 +78,6 @@ resource "aws_route_table_association" "public_subnet_route" {
 
 # NAT Gateway for Private Subnet (optional, if internet access is needed)
 resource "aws_eip" "nat_eip" {
-  vpc = true
 }
 
 resource "aws_nat_gateway" "nat_gateway" {
