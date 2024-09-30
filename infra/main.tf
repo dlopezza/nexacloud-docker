@@ -175,7 +175,7 @@ resource "aws_elastic_beanstalk_environment" "my_env" {
   }
 
   setting {
-    namespace = "aws:ec2:vpc"
+    namespace = "aws:autoscaling:launchconfiguration"
     name      = "SecurityGroups"
     value     = aws_security_group.myapp_sg.id
   }
