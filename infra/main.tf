@@ -163,7 +163,7 @@ resource "aws_elastic_beanstalk_environment" "my_env" {
   setting {
     namespace = "aws:ec2:vpc"
     name      = "Subnets"
-    value     = "${aws_subnet.private_subnet.id}"  # Use only the private subnet for EC2 instances
+    value     = "${aws_subnet.public_subnet.id}"  # Use only the private subnet for EC2 instances
   }
 
   setting {
