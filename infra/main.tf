@@ -132,9 +132,9 @@ resource "aws_elastic_beanstalk_environment" "my_env" {
   solution_stack_name = data.aws_elastic_beanstalk_solution_stack.docker_stack.name
   version_label  = aws_elastic_beanstalk_application_version.my_app_version.name
 
-  setting {
-    namespace = "aws:elasticbeanstalk:environment"
-    name      = "InstanceProfile"
+setting {
+    namespace = "aws:autoscaling:launchconfiguration"
+    name      = "IamInstanceProfile"
     value     = "LabInstanceProfile"
   }
 
