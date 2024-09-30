@@ -134,12 +134,6 @@ resource "aws_elastic_beanstalk_environment" "my_env" {
 
   setting {
     namespace = "aws:elasticbeanstalk:environment"
-    name      = "CNAME"
-    value     = "nexacloud-aws-docker" 
-  }
-
-  setting {
-    namespace = "aws:elasticbeanstalk:environment"
     name      = "InstanceProfile"
     value     = "LabInstanceProfile"
   }
