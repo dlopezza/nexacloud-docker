@@ -145,8 +145,8 @@ resource "aws_elastic_beanstalk_environment" "my_env" {
   }
 
   setting {
-    namespace = "aws:elasticbeanstalk:environment"
-    name      = "KeyPair"
+    namespace = "aws:autoscaling:launchconfiguration"
+    name      = "EC2KeyName"
     value     = "Vockey"
   }
 
