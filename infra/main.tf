@@ -141,7 +141,7 @@ setting {
   setting {
     namespace = "aws:autoscaling:launchconfiguration"
     name      = "EC2KeyName"
-    value     = "Vockey"
+    value     = "NexaCloudKey"
   }
 
   setting {
