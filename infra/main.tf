@@ -60,8 +60,8 @@ resource "aws_internet_gateway" "internet_gateway" {
   }
 }
 
-# Route Table
-resource "aws_route_table" "route_table" {
+# Route Table for Public Subnet
+resource "aws_route_table" "public_route_table" {
   vpc_id = aws_vpc.vpc_terraproject.id
 
   route {
@@ -73,7 +73,37 @@ resource "aws_route_table" "route_table" {
 # Associate Route Table with Public Subnet
 resource "aws_route_table_association" "public_subnet_route" {
   subnet_id      = aws_subnet.public_subnet.id
-  route_table_id = aws_route_table.route_table.id
+  route_table_id = aws_route_table.public_route_table.id
+}
+
+# NAT Gateway for Private Subnet (optional, if internet access is needed)
+resource "aws_eip" "nat_eip" {
+  vpc = true
+}
+
+resource "aws_nat_gateway" "nat_gateway" {
+  allocation_id = aws_eip.nat_eip.id
+  subnet_id    = aws_subnet.public_subnet.id
+
+  tags = {
+    Name = "nat-gateway"
+  }
+}
+
+# Route Table for Private Subnet
+resource "aws_route_table" "private_route_table" {
+  vpc_id = aws_vpc.vpc_terraproject.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    nat_gateway_id = aws_nat_gateway.nat_gateway.id
+  }
+}
+
+# Associate Route Table with Private Subnet
+resource "aws_route_table_association" "private_subnet_route" {
+  subnet_id      = aws_subnet.private_subnet.id
+  route_table_id = aws_route_table.private_route_table.id
 }
 
 resource "aws_security_group" "myapp_sg" {
@@ -127,12 +157,12 @@ resource "aws_elastic_beanstalk_application_version" "my_app_version" {
 }
 
 resource "aws_elastic_beanstalk_environment" "my_env" {
-  name           = "my-env"
-  application    = aws_elastic_beanstalk_application.my_app.name
+  name                = "my-env"
+  application         = aws_elastic_beanstalk_application.my_app.name
   solution_stack_name = data.aws_elastic_beanstalk_solution_stack.docker_stack.name
-  version_label  = aws_elastic_beanstalk_application_version.my_app_version.name
+  version_label       = aws_elastic_beanstalk_application_version.my_app_version.name
 
-setting {
+  setting {
     namespace = "aws:autoscaling:launchconfiguration"
     name      = "IamInstanceProfile"
     value     = "LabInstanceProfile"
@@ -153,19 +183,19 @@ setting {
   setting {
     namespace = "aws:ec2:vpc"
     name      = "Subnets"
-    value     = "${aws_subnet.public_subnet.id},${aws_subnet.private_subnet.id}"
+    value     = "${aws_subnet.private_subnet.id}"  # Use only the private subnet for EC2 instances
   }
 
   setting {
     namespace = "aws:ec2:vpc"
     name      = "ELBSubnets"
-    value     = aws_subnet.public_subnet.id
+    value     = "${aws_subnet.public_subnet.id}"  # Use only the public subnet for ELB
   }
 
   setting {
     namespace = "aws:ec2:vpc"
     name      = "AssociatePublicIpAddress"
-    value     = "false"
+    value     = "false"  # Set to false for private instances
   }
 
   setting {
@@ -174,4 +204,3 @@ setting {
     value     = aws_security_group.myapp_sg.id
   }
 }
-
