@@ -76,7 +76,7 @@ resource "aws_route_table_association" "public_subnet_route" {
   route_table_id = aws_route_table.public_route_table.id
 }
 
-# NAT Gateway for Private Subnet (optional, if internet access is needed)
+# NAT Gateway for Private Subnet 
 resource "aws_eip" "nat_eip" {
 }
 
@@ -111,9 +111,9 @@ resource "aws_security_group" "myapp_sg" {
   vpc_id      = aws_vpc.vpc_terraproject.id
 
   ingress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = -1
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
@@ -124,6 +124,41 @@ resource "aws_security_group" "myapp_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
+
+resource "aws_security_group" "db_sg" {
+  name        = "db_sg"
+  description = "Security group for the"
+  vpc_id      = aws_vpc.vpc_terraproject.id
+
+  ingress {
+    from_port   = 9876
+    to_port     = 9876
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+
+resource "aws_db_instance" "db" {
+  identifier             = "nexadb"
+  name                   = "nexadb"
+  instance_class         = "db.t3.micro"
+  allocated_storage      = 5
+  engine                 = "postgres"
+  engine_version         = "16.3"
+  skip_final_snapshot    = true
+  publicly_accessible    = false
+  vpc_security_group_ids = [aws_security_group.db_sg.id]
+  username               = "nexatest"
+  password               = "nexapass"
+  }
 
 resource "aws_s3_bucket" "my_app_bucket" {
   bucket = "nexacloudenvironmentsaver"
