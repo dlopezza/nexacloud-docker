@@ -181,6 +181,7 @@ resource "aws_db_instance" "db" {
   username               = "nexatest"
   password               = "nexapass"
   db_subnet_group_name   = aws_db_subnet_group.my_db_subnet_group.name
+  port                   = 9876
   }
 
 resource "aws_s3_bucket" "my_app_bucket" {
