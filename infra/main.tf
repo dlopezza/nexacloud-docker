@@ -214,6 +214,27 @@ resource "aws_elastic_beanstalk_application_version" "my_app_version" {
   key         = aws_s3_object.my_dockerrun.key
 }
 
+variable "env_vars" {
+  type = map(string)
+  default = {
+    COMPANY_NAME= "nexa in docker"
+    
+    DB_USER = aws_db_instance.db.username
+    DB_PASSWORD=aws_db_instance.db.password
+    DB_HOST=aws_db_instance.db.endpoint 
+    DB_DATABASE=aws_db_instance.db.db_name
+
+    #AWS_S3_LAMBDA_URL=XXXXXXXX
+    #AWS_S3_LAMBDA_APIKEY=XXXXXXXX
+
+    #AWS_DB_LAMBDA_URL=XXXXXXXX
+    #AWS_DB_LAMBDA_APIKEY=XXXXXXXX
+
+    #STRESS_PATH="/usr/bin/stress"
+    #LOAD_BALANCER_IFRAME_URL="https://tu_url.com"
+  }
+}
+
 resource "aws_elastic_beanstalk_environment" "my_env" {
   name                = "my-env"
   application         = aws_elastic_beanstalk_application.my_app.name
@@ -260,5 +281,14 @@ resource "aws_elastic_beanstalk_environment" "my_env" {
     namespace = "aws:autoscaling:launchconfiguration"
     name      = "SecurityGroups"
     value     = aws_security_group.myapp_sg.id
+  }
+
+  dynamic "setting" {
+  for_each = var.env_vars
+  content {
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name      = setting.key
+    value     = setting.value
+    }
   }
 }
