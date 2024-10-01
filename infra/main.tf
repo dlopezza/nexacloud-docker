@@ -287,11 +287,16 @@ resource "aws_elastic_beanstalk_environment" "my_env" {
 }
 
 resource "aws_lambda_function" "listings" {
- filename      = "ls3Listing.zip"
+ filename      = "s3Listing.zip"
  function_name = "getnexa-images-from-s3"
  role          = "arn:aws:iam::587298106973:role/LabRole"
  handler       = "index.handler"
  runtime       = "nodejs20.x"
+}
+
+resource "aws_api_gateway_rest_api" "listingsApi" {
+ name        = "listingsApi"
+ description = "API Gateway for listings nodejs lambda"
 }
 
 
