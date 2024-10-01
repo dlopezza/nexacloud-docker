@@ -149,6 +149,7 @@ resource "aws_security_group" "db_sg" {
 resource "aws_db_instance" "db" {
   identifier             = "nexadb"
   name                   = "nexadb"
+  db_name                = "nexadb"
   instance_class         = "db.t3.micro"
   allocated_storage      = 5
   engine                 = "postgres"
@@ -158,6 +159,7 @@ resource "aws_db_instance" "db" {
   vpc_security_group_ids = [aws_security_group.db_sg.id]
   username               = "nexatest"
   password               = "nexapass"
+  availability_zone      = "us-east-1"
   }
 
 resource "aws_s3_bucket" "my_app_bucket" {
