@@ -145,6 +145,12 @@ resource "aws_security_group" "db_sg" {
   }
 }
 
+resource "aws_db_subnet_group" "my_db_subnet_group" {
+  name        = "my-db-subnet-group"
+  subnet_ids  = [aws_subnet.private_subnet.id]  # Use private subnets
+  description = "RDS Subnet Group for single-instance database"
+}
+
 
 resource "aws_db_instance" "db" {
   identifier             = "nexadb"
@@ -159,6 +165,7 @@ resource "aws_db_instance" "db" {
   username               = "nexatest"
   password               = "nexapass"
   availability_zone      = "us-east-1a"
+  db_subnet_group_name   = aws_db_subnet_group.my_db_subnet_group.name
   }
 
 resource "aws_s3_bucket" "my_app_bucket" {
