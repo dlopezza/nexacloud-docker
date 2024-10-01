@@ -148,7 +148,6 @@ resource "aws_security_group" "db_sg" {
 
 resource "aws_db_instance" "db" {
   identifier             = "nexadb"
-  name                   = "nexadb"
   db_name                = "nexadb"
   instance_class         = "db.t3.micro"
   allocated_storage      = 5
