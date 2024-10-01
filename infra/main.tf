@@ -158,7 +158,7 @@ resource "aws_db_instance" "db" {
   vpc_security_group_ids = [aws_security_group.db_sg.id]
   username               = "nexatest"
   password               = "nexapass"
-  availability_zone      = "us-east-1"
+  availability_zone      = "us-east-1a"
   }
 
 resource "aws_s3_bucket" "my_app_bucket" {
