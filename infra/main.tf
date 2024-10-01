@@ -299,5 +299,35 @@ resource "aws_api_gateway_rest_api" "listingsApi" {
  description = "API Gateway for listings nodejs lambda"
 }
 
+resource "aws_api_gateway_resource" "imagesResource" {
+  rest_api_id = aws_api_gateway_rest_api.listingsApi.id
+  parent_id   = aws_api_gateway_rest_api.listingsApi.root_resource_id
+  path_part   = "images"
+}
+
+resource "aws_api_gateway_method" "getImagesMethod" {
+  rest_api_id   = aws_api_gateway_rest_api.listingsApi.id
+  resource_id   = aws_api_gateway_resource.imagesResource.id
+  http_method   = "GET"
+  authorization = "NONE"  # No authorization for simplicity
+}
+
+resource "aws_api_gateway_integration" "getImagesIntegration" {
+  rest_api_id             = aws_api_gateway_rest_api.listingsApi.id
+  resource_id             = aws_api_gateway_resource.imagesResource.id
+  http_method             = aws_api_gateway_method.getImagesMethod.http_method
+  integration_http_method = "POST"  # POST for Lambda
+  type                    = "AWS_PROXY"  # AWS_PROXY integration
+
+  uri = "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/${aws_lambda_function.listings.arn}/invocations"
+}
+
+resource "aws_lambda_permission" "allow_apigateway" {
+  statement_id  = "AllowExecutionFromAPIGateway"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.listings.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_api_gateway_rest_api.listingsApi.execution_arn}/*/*"  # Allow all methods and resources
+}
 
 
