@@ -285,3 +285,13 @@ resource "aws_elastic_beanstalk_environment" "my_env" {
     }
   }
 }
+
+resource "aws_lambda_function" "this" {
+ filename      = "ls3Listing.zip"
+ function_name = "get images from s3"
+ role          = "arn:aws:iam::587298106973:role/LabRole"
+ handler       = "index.handler"
+ runtime       = "nodejs20.x"
+}
+
+
