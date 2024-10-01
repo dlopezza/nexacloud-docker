@@ -51,6 +51,17 @@ resource "aws_subnet" "private_subnet" {
   }
 }
 
+# Private Subnet
+resource "aws_subnet" "private_subnet2" {
+  vpc_id            = aws_vpc.vpc_terraproject.id
+  cidr_block        = "10.0.2.0/24"
+  availability_zone = data.aws_availability_zones.available.names[0]
+
+  tags = {
+    Name = "private-subnet"
+  }
+}
+
 # Internet Gateway
 resource "aws_internet_gateway" "internet_gateway" {
   vpc_id = aws_vpc.vpc_terraproject.id
@@ -105,6 +116,11 @@ resource "aws_route_table_association" "private_subnet_route" {
   route_table_id = aws_route_table.private_route_table.id
 }
 
+resource "aws_route_table_association" "private_subnet2_route" {
+  subnet_id      = aws_subnet.private_subnet2.id
+  route_table_id = aws_route_table.private_route_table.id
+}
+
 resource "aws_security_group" "myapp_sg" {
   name        = "myapp_sg"
   description = "Security group for myapp"
@@ -147,7 +163,7 @@ resource "aws_security_group" "db_sg" {
 
 resource "aws_db_subnet_group" "my_db_subnet_group" {
   name        = "my-db-subnet-group"
-  subnet_ids  = [aws_subnet.private_subnet.id]  # Use private subnets
+  subnet_ids  = [aws_subnet.private_subnet.id,aws_subnet.private_subnet2.id]  # Use private subnets
   description = "RDS Subnet Group for single-instance database"
 }
 
@@ -164,7 +180,6 @@ resource "aws_db_instance" "db" {
   vpc_security_group_ids = [aws_security_group.db_sg.id]
   username               = "nexatest"
   password               = "nexapass"
-  availability_zone      = "us-east-1a"
   db_subnet_group_name   = aws_db_subnet_group.my_db_subnet_group.name
   }
 
