@@ -182,7 +182,7 @@ resource "aws_db_instance" "db" {
   password               = "nexapass"
   db_subnet_group_name   = aws_db_subnet_group.my_db_subnet_group.name
   port                   = 9876
-  }
+}
 
 resource "aws_s3_bucket" "my_app_bucket" {
   bucket = "nexacloudenvironmentsaver"
@@ -201,7 +201,7 @@ resource "aws_elastic_beanstalk_application" "my_app" {
   description = "My Elastic Beanstalk Application"
 
   appversion_lifecycle {
-    service_role          = "arn:aws:iam::587298106973:role/LabRole"
+    service_role          = "arn:aws:iam::892672557072:role/LabRole"
     max_count             = 5
     delete_source_from_s3 = true
   }
@@ -289,7 +289,7 @@ resource "aws_elastic_beanstalk_environment" "my_env" {
 resource "aws_lambda_function" "listings" {
  filename      = "s3Listing.zip"
  function_name = "getnexa-images-from-s3"
- role          = "arn:aws:iam::587298106973:role/LabRole"
+ role          = "arn:aws:iam::892672557072:role/LabRole"
  handler       = "index.handler"
  runtime       = "nodejs20.x"
 }
