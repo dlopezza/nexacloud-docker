@@ -243,7 +243,7 @@ resource "aws_elastic_beanstalk_environment" "my_env" {
   setting {
     namespace = "aws:autoscaling:launchconfiguration"
     name      = "EC2KeyName"
-    value     = "NexaCloudKey"
+    value     = "vockey"
   }
 
   setting {
