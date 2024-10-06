@@ -287,16 +287,16 @@ resource "aws_elastic_beanstalk_environment" "my_env" {
 }
 
 resource "aws_lambda_function" "listings" {
- filename      = "s3Listing.zip"
- function_name = "getnexa-images-from-s3"
- role          = "arn:aws:iam::892672557072:role/LabRole"
- handler       = "index.handler"
- runtime       = "nodejs20.x"
+  filename      = "s3Listing.zip"
+  function_name = "getnexa-images-from-s3"
+  role          = "arn:aws:iam::892672557072:role/LabRole"
+  handler       = "index.handler"
+  runtime       = "nodejs20.x"
 }
 
 resource "aws_api_gateway_rest_api" "listingsApi" {
- name        = "listingsApi"
- description = "API Gateway for listings nodejs lambda"
+  name        = "listingsApi"
+  description = "API Gateway for listings nodejs lambda"
 }
 
 resource "aws_api_gateway_resource" "imagesResource" {
@@ -329,5 +329,23 @@ resource "aws_lambda_permission" "allow_apigateway" {
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_api_gateway_rest_api.listingsApi.execution_arn}/*/*"  # Allow all methods and resources
 }
+
+# Deploy the API Gateway
+resource "aws_api_gateway_deployment" "listings_deployment" {
+  rest_api_id = aws_api_gateway_rest_api.listingsApi.id
+  stage_name  = "default"  # Stage name (like 'default' in your case)
+
+  # Trigger redeployment when the method or resource changes
+  triggers = {
+    redeployment = sha1(jsonencode(aws_api_gateway_integration.getImagesIntegration.id))
+  }
+}
+
+# Outputs the API endpoint
+output "api_gateway_url" {
+  value = "${aws_api_gateway_rest_api.listingsApi.execution_arn}/default/images"
+  description = "API Gateway URL"
+}
+
 
 
