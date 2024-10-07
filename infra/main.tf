@@ -210,7 +210,7 @@ locals {
   ]
 }
 
-resource "aws_s3_bucket_object" "image" {
+resource "aws_s3_object" "image" {
   for_each = { for img in local.images : img.name => img }
 
   bucket = aws_s3_bucket.imagesBucket.bucket
