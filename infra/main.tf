@@ -328,7 +328,7 @@ resource "aws_lambda_function" "addRowToDb" {
     variables = {
     DB_USER        = aws_db_instance.db.username
     DB_PASSWORD    = aws_db_instance.db.password
-    DB_HOST        = aws_db_instance.db.endpoint
+    DB_HOST        = split(":", aws_db_instance.db.endpoint)[0]
     DB_DATABASE    = aws_db_instance.db.db_name
     DB_PORT        = aws_db_instance.db.port
     }
