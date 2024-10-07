@@ -314,7 +314,7 @@ resource "aws_lambda_function" "getImages" {
   filename      = "s3Listing.zip"
   function_name = "getnexa-images-from-s3"
   role          = "arn:aws:iam::892672557072:role/LabRole"
-  handler       = "s3Listings.handler"
+  handler       = "s3Listing.handler"
   runtime       = "nodejs20.x"
   environment {
     variables = {
