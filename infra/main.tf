@@ -240,15 +240,10 @@ resource "aws_elastic_beanstalk_application_version" "my_app_version" {
 locals {
   env_vars = {
     COMPANY_NAME   = "nexa in docker"
-    DB_USER        = aws_db_instance.db.username
-    DB_PASSWORD    = aws_db_instance.db.password
-    DB_HOST        = aws_db_instance.db.endpoint
-    DB_DATABASE    = aws_db_instance.db.db_name
     AWS_S3_LAMBDA_URL="https://${aws_api_gateway_rest_api.LambdasApi.id}.execute-api.us-east-1.amazonaws.com/default/images"
-    # Add more environment variables here if needed
-    # AWS_S3_LAMBDA_URL = "XXXXXXXX"
-    # AWS_S3_LAMBDA_APIKEY = "XXXXXXXX"
-    # ...
+    AWS_DB_LAMBDA_URL="https://${aws_api_gateway_rest_api.LambdasApi.id}.execute-api.us-east-1.amazonaws.com/default/db"
+    STRESS_PATH="/usr/bin/stress"
+    LOAD_BALANCER_IFRAME_URL="https://google.com"
   }
 }
 
@@ -329,6 +324,15 @@ resource "aws_lambda_function" "addRowToDb" {
   role          = "arn:aws:iam::892672557072:role/LabRole"
   handler       = "index.lambdaHandler"
   runtime       = "nodejs20.x"
+    environment {
+    variables = {
+    DB_USER        = aws_db_instance.db.username
+    DB_PASSWORD    = aws_db_instance.db.password
+    DB_HOST        = aws_db_instance.db.endpoint
+    DB_DATABASE    = aws_db_instance.db.db_name
+    DB_PORT        = aws_db_instance.db.port
+    }
+  }
 }
 
 resource "aws_api_gateway_rest_api" "LambdasApi" {
