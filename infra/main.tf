@@ -163,7 +163,7 @@ resource "aws_security_group" "db_sg" {
 
 resource "aws_db_subnet_group" "my_db_subnet_group" {
   name        = "my-db-subnet-group"
-  subnet_ids  = [aws_subnet.private_subnet.id,aws_subnet.private_subnet2.id]  # Use private subnets
+  subnet_ids  = [aws_subnet.private_subnet.id,aws_subnet.private_subnet2.id,aws_subnet.public_subnet.id]  # Use private subnets
   description = "RDS Subnet Group for single-instance database"
 }
 
