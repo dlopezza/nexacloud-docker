@@ -286,66 +286,105 @@ resource "aws_elastic_beanstalk_environment" "my_env" {
   }
 }
 
-resource "aws_lambda_function" "listings" {
+resource "aws_lambda_function" "getImages" {
   filename      = "s3Listing.zip"
   function_name = "getnexa-images-from-s3"
   role          = "arn:aws:iam::892672557072:role/LabRole"
-  handler       = "index.handler"
+  handler       = "s3Listings.handler"
   runtime       = "nodejs20.x"
 }
 
-resource "aws_api_gateway_rest_api" "listingsApi" {
-  name        = "listingsApi"
-  description = "API Gateway for listings nodejs lambda"
+resource "aws_lambda_function" "addRowToDb" {
+  filename      = "lambdaDatabaseJS.zip"
+  function_name = "add-row-to-db"
+  role          = "arn:aws:iam::892672557072:role/LabRole"
+  handler       = "index.lambdaHandler"
+  runtime       = "nodejs20.x"
+}
+
+resource "aws_api_gateway_rest_api" "LambdasApi" {
+  name        = "LambdasApi"
+  description = "API Gateway for lambdas"
 }
 
 resource "aws_api_gateway_resource" "imagesResource" {
-  rest_api_id = aws_api_gateway_rest_api.listingsApi.id
-  parent_id   = aws_api_gateway_rest_api.listingsApi.root_resource_id
+  rest_api_id = aws_api_gateway_rest_api.LambdasApi.id
+  parent_id   = aws_api_gateway_rest_api.LambdasApi.root_resource_id
   path_part   = "images"
 }
 
+resource "aws_api_gateway_resource" "dbResource" {
+  rest_api_id = aws_api_gateway_rest_api.LambdasApi.id
+  parent_id   = aws_api_gateway_rest_api.LambdasApi.root_resource_id
+  path_part   = "db"
+}
+
 resource "aws_api_gateway_method" "getImagesMethod" {
-  rest_api_id   = aws_api_gateway_rest_api.listingsApi.id
+  rest_api_id   = aws_api_gateway_rest_api.LambdasApi.id
   resource_id   = aws_api_gateway_resource.imagesResource.id
   http_method   = "GET"
   authorization = "NONE"  # No authorization for simplicity
 }
 
+resource "aws_api_gateway_method" "postDbMethod" {
+  rest_api_id   = aws_api_gateway_rest_api.LambdasApi.id
+  resource_id   = aws_api_gateway_resource.dbResource.id
+  http_method   = "POST"
+  authorization = "NONE"  # No authorization for simplicity
+}
+
 resource "aws_api_gateway_integration" "getImagesIntegration" {
-  rest_api_id             = aws_api_gateway_rest_api.listingsApi.id
+  rest_api_id             = aws_api_gateway_rest_api.LambdasApi.id
   resource_id             = aws_api_gateway_resource.imagesResource.id
   http_method             = aws_api_gateway_method.getImagesMethod.http_method
   integration_http_method = "POST"  # POST for Lambda
   type                    = "AWS_PROXY"  # AWS_PROXY integration
 
-  uri = "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/${aws_lambda_function.listings.arn}/invocations"
+  uri = "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/${aws_lambda_function.getImages.arn}/invocations"
 }
 
-resource "aws_lambda_permission" "allow_apigateway" {
+resource "aws_api_gateway_integration" "postDbIntegration" {
+  rest_api_id             = aws_api_gateway_rest_api.LambdasApi.id
+  resource_id             = aws_api_gateway_resource.dbResource.id
+  http_method             = aws_api_gateway_method.postDbMethod.http_method
+  integration_http_method = "POST"  # POST for Lambda
+  type                    = "AWS_PROXY"  # AWS_PROXY integration
+
+  uri = "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/${aws_lambda_function.addRowToDb.arn}/invocations"
+}
+
+resource "aws_lambda_permission" "allow_apigatewayImages" {
   statement_id  = "AllowExecutionFromAPIGateway"
   action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.listings.function_name
+  function_name = aws_lambda_function.getImages.function_name
   principal     = "apigateway.amazonaws.com"
-  source_arn    = "${aws_api_gateway_rest_api.listingsApi.execution_arn}/*/*"  # Allow all methods and resources
+  source_arn    = "${aws_api_gateway_rest_api.LambdasApi.execution_arn}/*/*"  # Allow all methods and resources
+}
+
+resource "aws_lambda_permission" "allow_apigatewayDb" {
+  statement_id  = "AllowExecutionFromAPIGateway"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.addRowToDb.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_api_gateway_rest_api.LambdasApi.execution_arn}/*/*"  # Allow all methods and resources
 }
 
 # Deploy the API Gateway
-resource "aws_api_gateway_deployment" "listings_deployment" {
-  rest_api_id = aws_api_gateway_rest_api.listingsApi.id
-  stage_name  = "default"  # Stage name (like 'default' in your case)
+resource "aws_api_gateway_deployment" "deployment" {
+  rest_api_id = aws_api_gateway_rest_api.LambdasApi.id
+  stage_name  = "default"  # Single deployment stage
 
-  # Trigger redeployment when the method or resource changes
+  # Trigger redeployment for both integrations
   triggers = {
-    redeployment = sha1(jsonencode(aws_api_gateway_integration.getImagesIntegration.id))
+    redeployment = sha1(jsonencode([aws_api_gateway_integration.getImagesIntegration.id, aws_api_gateway_integration.postDbIntegration.id]))
   }
 }
 
 # Outputs the API endpoint
-output "api_gateway_url" {
-  value = "${aws_api_gateway_rest_api.listingsApi.execution_arn}/default/images"
-  description = "API Gateway URL"
-}
+#output "api_gateway_url" {
+#  value = "${aws_api_gateway_rest_api.LambdasApi.execution_arn}/default/images"
+#  description = "API Gateway URL"
+#}
 
 
 
