@@ -242,6 +242,11 @@ locals {
     COMPANY_NAME   = "nexa in docker"
     AWS_S3_LAMBDA_URL="https://${aws_api_gateway_rest_api.LambdasApi.id}.execute-api.us-east-1.amazonaws.com/default/images"
     AWS_DB_LAMBDA_URL="https://${aws_api_gateway_rest_api.LambdasApi.id}.execute-api.us-east-1.amazonaws.com/default/db"
+    DB_USER        = aws_db_instance.db.username
+    DB_PASSWORD    = aws_db_instance.db.password
+    DB_HOST        = split(":", aws_db_instance.db.endpoint)[0]
+    DB_DATABASE    = aws_db_instance.db.db_name
+    DB_PORT        = aws_db_instance.db.port
     STRESS_PATH="/usr/bin/stress"
     LOAD_BALANCER_IFRAME_URL="https://google.com"
   }
