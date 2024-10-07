@@ -315,7 +315,7 @@ resource "aws_lambda_function" "getImages" {
   function_name = "getnexa-images-from-s3"
   role          = "arn:aws:iam::892672557072:role/LabRole"
   handler       = "s3Listing.handler"
-  runtime       = "nodejs20.x"
+  runtime       = "nodejs16.x"
   environment {
     variables = {
       AWS_S3_BUCKET = aws_s3_bucket.imagesBucket.bucket
