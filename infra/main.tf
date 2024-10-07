@@ -184,16 +184,39 @@ resource "aws_db_instance" "db" {
   port                   = 9876
 }
 
-resource "aws_s3_bucket" "my_app_bucket" {
+resource "aws_s3_bucket" "dockerBucket" {
   bucket = "nexacloudenvironmentsaver"
 }
 
 resource "aws_s3_object" "my_dockerrun" {
-  bucket = aws_s3_bucket.my_app_bucket.bucket
+  bucket = aws_s3_bucket.dockerBucket.bucket
   key    = "Dockerrun.aws.json"
   source = "Dockerrun.aws.json"
 
   etag = filemd5("Dockerrun.aws.json")
+}
+
+resource "aws_s3_bucket" "imagesBucket" {
+  bucket = "nexacloudimagesforlambda"
+}
+
+locals {
+  # List all image files in the local 'images' directory
+  images = [
+    for file in fileset("${path.module}/images", "*.jpg") : {
+      name = file
+      path = "${path.module}/images/${file}"
+    }
+  ]
+}
+
+resource "aws_s3_bucket_object" "image" {
+  for_each = { for img in local.images : img.name => img }
+
+  bucket = aws_s3_bucket.imagesBucket.bucket
+  key    = "images/${each.value.name}" 
+  source = each.value.path
+  acl    = "private"  # Set the desired ACL
 }
 
 resource "aws_elastic_beanstalk_application" "my_app" {
@@ -210,7 +233,7 @@ resource "aws_elastic_beanstalk_application" "my_app" {
 resource "aws_elastic_beanstalk_application_version" "my_app_version" {
   name        = "my-app-version-${timestamp()}"
   application = aws_elastic_beanstalk_application.my_app.name
-  bucket      = aws_s3_bucket.my_app_bucket.bucket
+  bucket      = aws_s3_bucket.dockerBucket.bucket
   key         = aws_s3_object.my_dockerrun.key
 }
 
@@ -221,6 +244,7 @@ locals {
     DB_PASSWORD    = aws_db_instance.db.password
     DB_HOST        = aws_db_instance.db.endpoint
     DB_DATABASE    = aws_db_instance.db.db_name
+    AWS_S3_LAMBDA_URL="https://${aws_api_gateway_rest_api.LambdasApi.id}.execute-api.us-east-1.amazonaws.com/default/images"
     # Add more environment variables here if needed
     # AWS_S3_LAMBDA_URL = "XXXXXXXX"
     # AWS_S3_LAMBDA_APIKEY = "XXXXXXXX"
@@ -292,6 +316,9 @@ resource "aws_lambda_function" "getImages" {
   role          = "arn:aws:iam::892672557072:role/LabRole"
   handler       = "s3Listings.handler"
   runtime       = "nodejs20.x"
+    environment {
+    AWS_S3_BUCKET = aws_s3_bucket.imagesBucket.bucket
+  }
 }
 
 resource "aws_lambda_function" "addRowToDb" {
@@ -381,10 +408,14 @@ resource "aws_api_gateway_deployment" "deployment" {
 }
 
 # Outputs the API endpoint
-#output "api_gateway_url" {
-#  value = "${aws_api_gateway_rest_api.LambdasApi.execution_arn}/default/images"
-#  description = "API Gateway URL"
-#}
+output "api_gateway_url_images" {
+  value       = "https://${aws_api_gateway_rest_api.LambdasApi.id}.execute-api.us-east-1.amazonaws.com/default/images"
+  description = "API Gateway URL"
+}
 
+output "api_gateway_url_db" {
+  value       = "https://${aws_api_gateway_rest_api.LambdasApi.id}.execute-api.us-east-1.amazonaws.com/default/db"
+  description = "API Gateway URL"
+}
 
 
