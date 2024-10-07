@@ -333,6 +333,11 @@ resource "aws_lambda_function" "addRowToDb" {
     DB_PORT        = aws_db_instance.db.port
     }
   }
+
+  vpc_config {
+  subnet_ids         = [aws_subnet.private_subnet.id,aws_subnet.private_subnet2.id]  # Replace with your actual private subnet IDs
+  security_group_ids = [aws_security_group.db_sg.id]  # Replace with your actual security group ID
+  }
 }
 
 resource "aws_api_gateway_rest_api" "LambdasApi" {
