@@ -316,8 +316,10 @@ resource "aws_lambda_function" "getImages" {
   role          = "arn:aws:iam::892672557072:role/LabRole"
   handler       = "s3Listings.handler"
   runtime       = "nodejs20.x"
-    environment {
-    AWS_S3_BUCKET = aws_s3_bucket.imagesBucket.bucket
+  environment {
+    variables = {
+      AWS_S3_BUCKET = aws_s3_bucket.imagesBucket.bucket
+    }
   }
 }
 
