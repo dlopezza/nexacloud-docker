@@ -1,6 +1,6 @@
 variable "subnet_ids" {
-  type        = string
-  description = "Id of the subnets used in the db"
+  description = "List of subnet IDs for the DB subnet group"
+  type        = list(string)
 }
 
 variable "vpc_id" {
