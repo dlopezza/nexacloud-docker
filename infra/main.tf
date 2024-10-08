@@ -67,7 +67,7 @@ module "app"{
   vpc_id            = module.vpc.vpc_id
   port              = 80
   service_role      = "arn:aws:iam::892672557072:role/LabRole"
-  docker_bucket     = module.buckets.docker
+  docker_bucket     = module.buckets.docker_bucket
   dockerrun_key     = module.buckets.dockerrun_key
   public_subnet_id  = module.vpc.public_subnet_id
   private_subnet_id = module.vpc.private_subnet1_id
