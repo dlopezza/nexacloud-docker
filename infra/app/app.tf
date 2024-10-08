@@ -23,7 +23,7 @@ resource "aws_security_group" "app_sg" {
   }
 }
 
-resource "aws_elastic_beanstalk_application" "app" {
+resource "aws_elastic_beanstalk_application" "nexa-app" {
   name        = "Nexa cloud app"
   description = "Elastic Beanstalk Application for nexaCloud"
 
@@ -36,14 +36,14 @@ resource "aws_elastic_beanstalk_application" "app" {
 
 resource "aws_elastic_beanstalk_application_version" "app_version" {
   name        = "my-app-version-${timestamp()}"
-  application = aws_elastic_beanstalk_application.app.name
+  application = aws_elastic_beanstalk_application.nexa-app.name
   bucket      = var.docker_bucket
   key         = var.dockerrun_key
 }
 
-resource "aws_elastic_beanstalk_environment" "env" {
-  name                = "env"
-  application         = aws_elastic_beanstalk_application.app.name
+resource "aws_elastic_beanstalk_environment" "nexa-env" {
+  name                = "nexa-env"
+  application         = aws_elastic_beanstalk_application.nexa-app.name
   solution_stack_name = data.aws_elastic_beanstalk_solution_stack.docker_stack.name
   version_label       = aws_elastic_beanstalk_application_version.app_version.name
 
