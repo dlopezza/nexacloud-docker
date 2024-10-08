@@ -2,7 +2,7 @@ resource "random_string" "bucket_suffix" {
   length  = 8
   upper   = false
   lower   = true
-  number  = true
+  numeric  = true
   special = false
 }
 
