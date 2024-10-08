@@ -121,8 +121,8 @@ resource "aws_route_table_association" "private_subnet2_route" {
   route_table_id = aws_route_table.private_route_table.id
 }
 
-resource "aws_security_group" "myapp_sg" {
-  name        = "myapp_sg"
+resource "aws_security_group" "nexa_sg" {
+  name        = "nexa_sg"
   description = "Security group for myapp"
   vpc_id      = aws_vpc.vpc_terraproject.id
 
@@ -297,7 +297,7 @@ resource "aws_elastic_beanstalk_environment" "my_env" {
   setting {
     namespace = "aws:autoscaling:launchconfiguration"
     name      = "SecurityGroups"
-    value     = aws_security_group.myapp_sg.id
+    value     = aws_security_group.nexa_sg.id
   }
 
   dynamic "setting" {

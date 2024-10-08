@@ -7,6 +7,15 @@ resource "aws_vpc" "vpc" {
   }
 }
 
+resource "aws_internet_gateway" "igw" {
+  vpc_id = aws_vpc.vpc.id
+
+  tags = {
+    Name = "${var.vpc_name}-igw"
+  }
+}
+
+
 module "subnets" {
   source = "./subnets"
 
@@ -17,5 +26,6 @@ module "subnets" {
   private_subnet2_cidr_block = var.private_subnet2_cidr_block
   main_az                 = var.main_az
   replication_az          = var.replication_az
+  igw_id                  = aws_internet_gateway.igw.id
 }
 

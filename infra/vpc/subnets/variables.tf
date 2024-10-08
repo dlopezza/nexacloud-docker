@@ -37,3 +37,9 @@ variable "replication_az" {
   default     = "us-east-1b"
   description = "Availability zone for the replication subnet"
 }
+
+variable "igw_id" {
+  type        = string
+  description = "Id of the VPC internet gateway"
+}
+
