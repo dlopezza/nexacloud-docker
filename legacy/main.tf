@@ -1,125 +1,125 @@
-terraform {
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 5.0"
-    }
-  }
-}
+# terraform {
+#   required_providers {
+#     aws = {
+#       source  = "hashicorp/aws"
+#       version = "~> 5.0"
+#     }
+#   }
+# }
 
 data "aws_availability_zones" "available" {}
 
-provider "aws" {
-  region = "us-east-1"
-}
+# provider "aws" {
+#   region = "us-east-1"
+# }
 
 data "aws_elastic_beanstalk_solution_stack" "docker_stack" {
   most_recent = true
   name_regex  = "64bit Amazon Linux 2023 (.*) running Docker"
 }
 
-resource "aws_vpc" "vpc_terraproject" {
-  cidr_block           = "10.0.0.0/16"
-  enable_dns_hostnames = true
+# resource "aws_vpc" "vpc_terraproject" {
+#   cidr_block           = "10.0.0.0/16"
+#   enable_dns_hostnames = true
 
-  tags = {
-    Name = "vpc-terraproject"
-  }
-}
+#   tags = {
+#     Name = "vpc-terraproject"
+#   }
+# }
 
-# Public Subnet
-resource "aws_subnet" "public_subnet" {
-  vpc_id                = aws_vpc.vpc_terraproject.id
-  cidr_block            = "10.0.1.0/24"
-  availability_zone     = data.aws_availability_zones.available.names[0]
+# # Public Subnet
+# resource "aws_subnet" "public_subnet" {
+#   vpc_id                = aws_vpc.vpc_terraproject.id
+#   cidr_block            = "10.0.1.0/24"
+#   availability_zone     = data.aws_availability_zones.available.names[0]
 
-  map_public_ip_on_launch = true
+#   map_public_ip_on_launch = true
 
-  tags = {
-    Name = "public-subnet"
-  }
-}
+#   tags = {
+#     Name = "public-subnet"
+#   }
+# }
 
-# Private Subnet
-resource "aws_subnet" "private_subnet" {
-  vpc_id            = aws_vpc.vpc_terraproject.id
-  cidr_block        = "10.0.2.0/24"
-  availability_zone = data.aws_availability_zones.available.names[1]
+# # Private Subnet
+# resource "aws_subnet" "private_subnet" {
+#   vpc_id            = aws_vpc.vpc_terraproject.id
+#   cidr_block        = "10.0.2.0/24"
+#   availability_zone = data.aws_availability_zones.available.names[1]
 
-  tags = {
-    Name = "private-subnet"
-  }
-}
+#   tags = {
+#     Name = "private-subnet"
+#   }
+# }
 
-# Private Subnet
-resource "aws_subnet" "private_subnet2" {
-  vpc_id            = aws_vpc.vpc_terraproject.id
-  cidr_block        = "10.0.3.0/24"
-  availability_zone = data.aws_availability_zones.available.names[0]
+# # Private Subnet
+# resource "aws_subnet" "private_subnet2" {
+#   vpc_id            = aws_vpc.vpc_terraproject.id
+#   cidr_block        = "10.0.3.0/24"
+#   availability_zone = data.aws_availability_zones.available.names[0]
 
-  tags = {
-    Name = "private-subnet"
-  }
-}
+#   tags = {
+#     Name = "private-subnet"
+#   }
+# }
 
-# Internet Gateway
-resource "aws_internet_gateway" "internet_gateway" {
-  vpc_id = aws_vpc.vpc_terraproject.id
+# # Internet Gateway
+# resource "aws_internet_gateway" "internet_gateway" {
+#   vpc_id = aws_vpc.vpc_terraproject.id
 
-  tags = {
-    Name = "internet_gateway"
-  }
-}
+#   tags = {
+#     Name = "internet_gateway"
+#   }
+# }
 
-# Route Table for Public Subnet
-resource "aws_route_table" "public_route_table" {
-  vpc_id = aws_vpc.vpc_terraproject.id
+# # Route Table for Public Subnet
+# resource "aws_route_table" "public_route_table" {
+#   vpc_id = aws_vpc.vpc_terraproject.id
 
-  route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.internet_gateway.id
-  }
-}
+#   route {
+#     cidr_block = "0.0.0.0/0"
+#     gateway_id = aws_internet_gateway.internet_gateway.id
+#   }
+# }
 
-# Associate Route Table with Public Subnet
-resource "aws_route_table_association" "public_subnet_route" {
-  subnet_id      = aws_subnet.public_subnet.id
-  route_table_id = aws_route_table.public_route_table.id
-}
+# # Associate Route Table with Public Subnet
+# resource "aws_route_table_association" "public_subnet_route" {
+#   subnet_id      = aws_subnet.public_subnet.id
+#   route_table_id = aws_route_table.public_route_table.id
+# }
 
-# NAT Gateway for Private Subnet 
-resource "aws_eip" "nat_eip" {
-}
+# # NAT Gateway for Private Subnet 
+# resource "aws_eip" "nat_eip" {
+# }
 
-resource "aws_nat_gateway" "nat_gateway" {
-  allocation_id = aws_eip.nat_eip.id
-  subnet_id    = aws_subnet.public_subnet.id
+# resource "aws_nat_gateway" "nat_gateway" {
+#   allocation_id = aws_eip.nat_eip.id
+#   subnet_id    = aws_subnet.public_subnet.id
 
-  tags = {
-    Name = "nat-gateway"
-  }
-}
+#   tags = {
+#     Name = "nat-gateway"
+#   }
+# }
 
-# Route Table for Private Subnet
-resource "aws_route_table" "private_route_table" {
-  vpc_id = aws_vpc.vpc_terraproject.id
+# # Route Table for Private Subnet
+# resource "aws_route_table" "private_route_table" {
+#   vpc_id = aws_vpc.vpc_terraproject.id
 
-  route {
-    cidr_block = "0.0.0.0/0"
-    nat_gateway_id = aws_nat_gateway.nat_gateway.id
-  }
-}
+#   route {
+#     cidr_block = "0.0.0.0/0"
+#     nat_gateway_id = aws_nat_gateway.nat_gateway.id
+#   }
+# }
 
-# Associate Route Table with Private Subnet
-resource "aws_route_table_association" "private_subnet_route" {
-  subnet_id      = aws_subnet.private_subnet.id
-  route_table_id = aws_route_table.private_route_table.id
-}
+# # Associate Route Table with Private Subnet
+# resource "aws_route_table_association" "private_subnet_route" {
+#   subnet_id      = aws_subnet.private_subnet.id
+#   route_table_id = aws_route_table.private_route_table.id
+# }
 
-resource "aws_route_table_association" "private_subnet2_route" {
-  subnet_id      = aws_subnet.private_subnet2.id
-  route_table_id = aws_route_table.private_route_table.id
-}
+# resource "aws_route_table_association" "private_subnet2_route" {
+#   subnet_id      = aws_subnet.private_subnet2.id
+#   route_table_id = aws_route_table.private_route_table.id
+# }
 
 resource "aws_security_group" "nexa_sg" {
   name        = "nexa_sg"
@@ -297,7 +297,7 @@ resource "aws_elastic_beanstalk_environment" "my_env" {
   setting {
     namespace = "aws:autoscaling:launchconfiguration"
     name      = "SecurityGroups"
-    value     = aws_security_group.nexa_sg.id
+    value     = aws_security_group.myapp_sg.id
   }
 
   dynamic "setting" {
