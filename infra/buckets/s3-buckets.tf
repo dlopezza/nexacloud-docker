@@ -10,7 +10,7 @@ resource "aws_s3_bucket" "dockerBucket" {
   bucket = "${var.docker_bucket_name}-${random_string.bucket_suffix.result}"
 }
 
-resource "aws_s3_object" "my_dockerrun" {
+resource "aws_s3_object" "dockerrun" {
   bucket = aws_s3_bucket.dockerBucket.bucket
   key    = "Dockerrun.aws.json"
   source = "${path.cwd}/resources/Dockerrun.aws.json"

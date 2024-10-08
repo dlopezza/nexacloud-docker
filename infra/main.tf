@@ -33,15 +33,43 @@ module "db"{
     vpc_id     = module.vpc.vpc_id
     port       = 9876
     db_identifier    = "nexadb"
-    db_name          = "nexadb"
+    db_name          = var.db_name
     instance_class   = "db.t3.micro"
-    db_username      = "nexatest"
-    db_password      = "nexapass"
+    db_username      = var.db_username
+    db_password      = var.db_password
     sg_cidr_blocks   = ["0.0.0.0/0"]
 }
 
-module "docker"{
+module "buckets"{
   source      =  "./buckets"
   docker_bucket_name = "dockerbucket"
   images_bucket_name = "imagesbucket"
+}
+
+locals {
+  env_vars = {
+    COMPANY_NAME   = "nexa in docker"
+    //AWS_S3_LAMBDA_URL="https://${aws_api_gateway_rest_api.LambdasApi.id}.execute-api.us-east-1.amazonaws.com/default/images"
+    //AWS_DB_LAMBDA_URL="https://${aws_api_gateway_rest_api.LambdasApi.id}.execute-api.us-east-1.amazonaws.com/default/db"
+    DB_USER        = var.db_username
+    DB_PASSWORD    = var.db_password
+    DB_HOST        = module.db.db_endpoint
+    DB_DATABASE    = var.db_name
+    DB_PORT        = var.db_port
+    STRESS_PATH="/usr/bin/stress"
+    LOAD_BALANCER_IFRAME_URL="https://google.com"
+  }
+}
+
+module "app"{
+  source            = "./app"
+  env_vars          = local.env_vars
+  vpc_id            = module.vpc.vpc_id
+  port              = 80
+  service_role      = "arn:aws:iam::892672557072:role/LabRole"
+  docker_bucket     = module.buckets.docker
+  dockerrun_key     = module.buckets.dockerrun_key
+  public_subnet_id  = module.vpc.public_subnet_id
+  private_subnet_id = module.vpc.private_subnet1_id
+  instance_profile  = "LabInstanceProfile"
 }
