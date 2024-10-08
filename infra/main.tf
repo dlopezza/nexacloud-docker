@@ -1,3 +1,16 @@
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 3.0"
+    }
+    random = {
+      source  = "hashicorp/random"
+      version = "~> 3.0"
+    }
+  }
+}
+
 provider "aws" {
   region = "us-east-1"
 }
@@ -25,4 +38,10 @@ module "db"{
     db_username      = "nexatest"
     db_password      = "nexapass"
     sg_cidr_blocks   = ["0.0.0.0/0"]
+}
+
+module "docker"{
+  source      =  "./buckets"
+  docker_bucket_name = "dockerbucket"
+  images_bucket_name = "imagesbucket"
 }
