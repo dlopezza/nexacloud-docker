@@ -11,6 +11,7 @@ module "subnets" {
   source = "./subnets"
 
   vpc_id                   = aws_vpc.vpc.id
+  vpc_name                 = var.vpc_name
   public_subnet_cidr_block = var.public_subnet_cidr_block
   private_subnet1_cidr_block = var.private_subnet1_cidr_block
   private_subnet2_cidr_block = var.private_subnet2_cidr_block
