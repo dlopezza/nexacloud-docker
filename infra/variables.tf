@@ -18,5 +18,5 @@ variable "db_password" {
 
 variable "db_port"{
   type        = number
-  default     = 80
+  default     = 9876
 }
