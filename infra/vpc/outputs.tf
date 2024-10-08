@@ -27,8 +27,3 @@ output "private_subnets" {
   description = "List of private subnet IDs"
   value       = module.subnets.private_subnets
 }
-
-output "db_subnet_group_name" {
-  description = "The name of the DB subnet group"
-  value       = module.subnets.db_subnet_group_name
-}

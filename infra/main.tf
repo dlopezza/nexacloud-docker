@@ -13,3 +13,16 @@ module "vpc" {
   main_az                = "us-east-1a"
   replication_az         = "us-east-1b"
 }
+
+module "db"{
+    source     = "./db"
+    subnet_ids = module.vpc.private_subnets
+    vpc_id     = module.vpc.vpc_id
+    port       = 9876
+    db_identifier    = "nexadb"
+    db_name          = "nexadb"
+    instance_class   = "db.t3.micro"
+    db_username      = "nexatest"
+    db_password      = "nexapass"
+    sg_cidr_blocks   = ["0.0.0.0/0"]
+}
