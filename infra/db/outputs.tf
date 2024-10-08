@@ -5,5 +5,5 @@ output "db_instance_id" {
 
 output "db_endpoint" {
   description = "The endpoint of the RDS database instance"
-  value       = aws_db_instance.db.endpoint
+  value       = split(":", aws_db_instance.db.endpoint)[0]
 }
