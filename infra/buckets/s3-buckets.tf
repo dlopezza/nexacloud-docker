@@ -24,9 +24,9 @@ resource "aws_s3_bucket" "imagesBucket" {
 
 locals {
   images = [
-    for file in fileset("${path.module}/images", "*.jpg") : {
+    for file in fileset("${path.cwd}/resources/images", "*.jpg") : {
       name = file
-      path = "${path.module}/images/${file}"
+      path = "${path.cwd}/resources/images/${file}"
     }
   ]
 }
