@@ -1,3 +1,8 @@
+data "aws_elastic_beanstalk_solution_stack" "docker_stack" {
+  most_recent = true
+  name_regex  = "64bit Amazon Linux 2023 (.*) running Docker"
+}
+
 resource "aws_security_group" "app_sg" {
   name        = "app_sg"
   description = "Security group for nexacloud beanstalk app"
@@ -36,9 +41,9 @@ resource "aws_elastic_beanstalk_application_version" "app_version" {
   key         = var.dockerrun_key
 }
 
-resource "aws_elastic_beanstalk_environment" "my_env" {
-  name                = "my-env"
-  application         = aws_elastic_beanstalk_application.my_app.name
+resource "aws_elastic_beanstalk_environment" "env" {
+  name                = "env"
+  application         = aws_elastic_beanstalk_application.app.name
   solution_stack_name = data.aws_elastic_beanstalk_solution_stack.docker_stack.name
   version_label       = aws_elastic_beanstalk_application_version.app_version.name
 
