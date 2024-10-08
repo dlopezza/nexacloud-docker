@@ -19,7 +19,7 @@ resource "aws_s3_object" "my_dockerrun" {
 }
 
 resource "aws_s3_bucket" "imagesBucket" {
-  bucket = var.images_bucket_name-${random_string.bucket_suffix.result}
+  bucket = "${var.images_bucket_name}-${random_string.bucket_suffix.result}"  # Corrected string interpolation
 }
 
 locals {
@@ -31,11 +31,12 @@ locals {
   ]
 }
 
+
 resource "aws_s3_object" "image" {
   for_each = { for img in local.images : img.name => img }
 
   bucket = aws_s3_bucket.imagesBucket.bucket
-  key    = "images/${each.value.name}" 
+  key    = "images/${each.value.name}"
   source = each.value.path
   acl    = "private"
 }
