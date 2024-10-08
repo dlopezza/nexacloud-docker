@@ -5,7 +5,7 @@
 *.tfstate
 *.tfstate.*
 
-./legacy
+legacy/main.tf
 
 # Crash log files
 crash.log
