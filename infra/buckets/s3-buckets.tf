@@ -13,9 +13,9 @@ resource "aws_s3_bucket" "dockerBucket" {
 resource "aws_s3_object" "my_dockerrun" {
   bucket = aws_s3_bucket.dockerBucket.bucket
   key    = "Dockerrun.aws.json"
-  source = "Dockerrun.aws.json"
+  source = "${path.cwd}/resources/Dockerrun.aws.json"
 
-  etag = filemd5("${path.module}/Dockerrun.aws.json")
+  etag = filemd5("${path.cwd}/resources/Dockerrun.aws.json")
 }
 
 resource "aws_s3_bucket" "imagesBucket" {
