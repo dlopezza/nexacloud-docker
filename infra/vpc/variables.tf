@@ -1,33 +1,36 @@
-variable vpc_name {
+variable "vpc_name" {
   type        = string
   default     = "vpc_terraproject"
-  description = "name of the vpc"
+  description = "Name of the VPC"
 }
 
-variable vpc_cidr_block {
+variable "vpc_cidr_block" {
   type        = string
   default     = "10.0.0.0/16"
-  description = "description"
+  description = "CIDR block for the VPC"
 }
 
-variable public_subnet_cidr_block {
+variable "public_subnet_cidr_block" {
   type        = string
+  description = "CIDR block for the public subnet"
 }
 
-variable private_subnet1_cidr_block {
+variable "private_subnet1_cidr_block" {
   type        = string
+  description = "CIDR block for the first private subnet"
 }
 
-variable private_subnet2_cidr_block {
+variable "private_subnet2_cidr_block" {
   type        = string
+  description = "CIDR block for the second private subnet"
 }
 
-
-variable main_az {
+variable "main_az" {
   type        = string
+  description = "Availability zone for the main subnet"
 }
 
-variable replication_az {
+variable "replication_az" {
   type        = string
+  description = "Availability zone for the replication subnet"
 }
-
