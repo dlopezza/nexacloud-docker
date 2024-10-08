@@ -18,20 +18,20 @@ provider "aws" {
 module "vpc" {
   source = "./vpc"
 
-  vpc_name                = "vpc_terraproject"  
-  vpc_cidr_block          = "10.0.0.0/16"
-  public_subnet_cidr_block = "10.0.1.0/24"
+  vpc_name                   = "vpc_terraproject"  
+  vpc_cidr_block             = "10.0.0.0/16"
+  public_subnet_cidr_block   = "10.0.1.0/24"
   private_subnet1_cidr_block = "10.0.2.0/24"
   private_subnet2_cidr_block = "10.0.3.0/24"
-  main_az                = "us-east-1a"
-  replication_az         = "us-east-1b"
+  main_az                    = "us-east-1a"
+  replication_az             = "us-east-1b"
 }
 
 module "db"{
-    source     = "./db"
-    subnet_ids = module.vpc.private_subnets
-    vpc_id     = module.vpc.vpc_id
-    port       = 9876
+    source           = "./db"
+    subnet_ids       = module.vpc.private_subnets
+    vpc_id           = module.vpc.vpc_id
+    port             = var.db_port
     db_identifier    = "nexadb"
     db_name          = var.db_name
     instance_class   = "db.t3.micro"
@@ -41,7 +41,7 @@ module "db"{
 }
 
 module "buckets"{
-  source      =  "./buckets"
+  source             =  "./buckets"
   docker_bucket_name = "dockerbucket"
   images_bucket_name = "imagesbucket"
 }
