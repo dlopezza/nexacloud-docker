@@ -50,8 +50,8 @@ module "buckets"{
 locals {
   env_vars = {
     COMPANY_NAME   = "nexa in docker"
-    //AWS_S3_LAMBDA_URL="https://${aws_api_gateway_rest_api.LambdasApi.id}.execute-api.us-east-1.amazonaws.com/default/images"
-    //AWS_DB_LAMBDA_URL="https://${aws_api_gateway_rest_api.LambdasApi.id}.execute-api.us-east-1.amazonaws.com/default/db"
+    AWS_S3_LAMBDA_URL= module.imagesLambda.api_gateway_url
+    AWS_DB_LAMBDA_URL=module.add_row_to_db_lambda.api_gateway_url
     DB_USER        = var.db_username
     DB_PASSWORD    = var.db_password
     DB_HOST        = module.db.db_endpoint
