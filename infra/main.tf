@@ -81,6 +81,8 @@ module "imagesLambda"{
   role            = "arn:aws:iam::892672557072:role/LabRole"
   handler         = "s3Listing.handler"
   runtime         = "nodejs16.x"
+  path            = "images"
+  httpMethod      = "GET"
   environment_variables = {
     AWS_S3_BUCKET = aws_s3_bucket.imagesBucket.bucket
   }
@@ -93,6 +95,8 @@ module "add_row_to_db_lambda" {
   role            = "arn:aws:iam::892672557072:role/LabRole"
   handler         = "index.lambdaHandler"
   runtime         = "nodejs20.x"
+  path            = "db"
+  httpMethod      = "POST"
   environment_variables = {
     DB_USER        = var.db_username
     DB_PASSWORD    = var.db_password
