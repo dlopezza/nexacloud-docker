@@ -1,13 +1,13 @@
 
 variable "db_name" {
   type        = string
-  default     = "nexatest"
+  default     = "nexadb"
 }
 
 variable "db_username" {
   type        = string
   sensitive   = true
-  default     = "nexadb"
+  default     = "nexatest"
 }
 
 variable "db_password" {
