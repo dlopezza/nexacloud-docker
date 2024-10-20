@@ -32,7 +32,7 @@ module "db"{
     subnet_ids       = module.vpc.private_subnets
     vpc_id           = module.vpc.vpc_id
     port             = var.db_port
-    db_identifier    = "nexadb"
+    db_identifier    = var.db_name
     db_name          = var.db_name
     instance_class   = "db.t3.micro"
     db_username      = var.db_username
