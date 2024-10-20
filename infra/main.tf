@@ -84,7 +84,7 @@ module "imagesLambda"{
   path            = "images"
   httpMethod      = "GET"
   environment_variables = {
-    AWS_S3_BUCKET = aws_s3_bucket.imagesBucket.bucket
+    AWS_S3_BUCKET = module.buckets.images_bucket
   }
 }
 
