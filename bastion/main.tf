@@ -2,9 +2,9 @@ provider "aws" {
   region = "us-east-1"
 }
 
-data "local_file" "github_actions_ips" {
-  filename = "${path.module}/github_actions_ips.txt"
-}
+# data "local_file" "github_actions_ips" {
+#   filename = "${path.module}/github_actions_ips.txt"
+# }
 
 resource "aws_security_group" "github_actions_sg" {
   name        = "github-actions-sg"
@@ -30,15 +30,10 @@ resource "aws_instance" "bastion" {
   instance_type = "t2.micro"
   key_name      = "githubKey"
   security_groups = [aws_security_group.github_actions_sg.name]
+  iam_instance_profile = "LabRole"
 
-  user_data = <<-EOF
-              #!/bin/bash
-              sudo yum install -y yum-utils shadow-utils
-              sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp.repo
-              sudo yum -y install terraform
-              terraform -version
-              EOF
-
+  user_data = file("${path.module}/script.sh")
+  
   tags = {
     Name = "BastionHost"
   }
