@@ -30,10 +30,10 @@ resource "aws_instance" "bastion" {
   instance_type = "t2.micro"
   key_name      = "githubKey"
   security_groups = [aws_security_group.github_actions_sg.name]
-  iam_instance_profile = "LabRole"
+  iam_instance_profile = "LabInstanceProfile"
 
   user_data = file("${path.module}/script.sh")
-  
+
   tags = {
     Name = "BastionHost"
   }
