@@ -101,7 +101,7 @@ module "add_row_to_db_lambda" {
     DB_USER        = var.db_username
     DB_PASSWORD    = var.db_password
     DB_HOST        = module.db.db_endpoint
-    DB_DATABASE    = var.db_name
+    DB_NAME    = var.db_name
     DB_PORT        = var.db_port
   }
     vpc_config = {
