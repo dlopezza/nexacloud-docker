@@ -28,7 +28,7 @@ resource "aws_security_group" "github_actions_sg" {
 resource "aws_instance" "bastion" {
   ami           = "ami-01e3c4a339a264cc9"
   instance_type = "t2.micro"
-  key_name      = "vockey"
+  key_name      = "githubKey"
   security_groups = [aws_security_group.github_actions_sg.name]
 
   user_data = <<-EOF
