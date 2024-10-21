@@ -94,7 +94,7 @@ module "add_row_to_db_lambda" {
   function_name   = "add-row-to-db"
   role            = "arn:aws:iam::892672557072:role/LabRole"
   handler         = "index.lambdaHandler"
-  runtime         = "nodejs20.x"
+  runtime         = "nodejs16.x"
   path            = "db"
   httpMethod      = "POST"
   environment_variables = {
