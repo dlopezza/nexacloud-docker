@@ -1,4 +1,4 @@
-name: Remote Terraform Apply
+name: Remote Terraform Destroy
 on:
   workflow_dispatch:
 
