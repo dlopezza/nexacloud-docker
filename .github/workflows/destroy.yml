@@ -16,6 +16,9 @@ jobs:
       - name: Execute Terraform Commands
         run: |
           ssh -i ~/.ssh/deploy_key ${{ secrets.SSH_USER }}@${{ secrets.AWS_HOST }} '
+
+          # Navigate to infrastructure directory and run terraform commands
+            cd ~/deployment/infra
             terraform init
             terraform destroy -auto-approve
           '
