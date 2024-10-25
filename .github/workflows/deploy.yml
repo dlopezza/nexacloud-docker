@@ -1,11 +1,6 @@
 name: Remote Terraform Apply
 on:
   workflow_dispatch:
-    inputs:
-      terraform_workspace:
-        description: "Terraform workspace to use"
-        required: true
-        default: "default"
 
 jobs:
   deploy:
@@ -21,11 +16,14 @@ jobs:
       - name: Execute Terraform Commands
         run: |
           ssh -i ~/.ssh/deploy_key ${{ secrets.SSH_USER }}@${{ secrets.AWS_HOST }} '
-            # Clean up existing directory if it exists
-            rm -rf ~/deployment
-            
-            # Clone the repository
-            git clone ${{ github.server_url }}/${{ github.repository }} ~/deployment
+            if [ -d "~/deployment" ]; then
+              echo "Directory exists, pulling latest changes..."
+              cd ~/deployment
+              git pull
+            else
+              echo "Directory does not exist, cloning repository..."
+              git clone ${{ github.server_url }}/${{ github.repository }} ~/deployment
+            fi
             
             # Navigate to infrastructure directory and run terraform commands
             cd ~/deployment/infra
