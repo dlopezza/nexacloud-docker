@@ -1,0 +1,36 @@
+name: Remote Terraform Apply
+on:
+  workflow_dispatch:
+    inputs:
+      terraform_workspace:
+        description: "Terraform workspace to use"
+        required: true
+        default: "default"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H ${{ secrets.AWS_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Execute Terraform Commands
+        run: |
+          ssh -i ~/.ssh/deploy_key ${{ secrets.SSH_USER }}@${{ secrets.AWS_HOST }} '
+            # Clean up existing directory if it exists
+            rm -rf ~/deployment
+            
+            # Clone the repository
+            git clone ${{ github.server_url }}/${{ github.repository }} ~/deployment
+            
+            # Navigate to infrastructure directory and run terraform commands
+            cd ~/deployment/infra
+            
+            # Initialize and apply
+            terraform init
+            terraform apply -auto-approve
+          '
