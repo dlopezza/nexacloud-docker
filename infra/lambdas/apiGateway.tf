@@ -11,7 +11,7 @@ resource "aws_api_gateway_usage_plan" "usage_plan" {
   name = "nexa-usage-plan"
 
   api_stages {
-    api_id = aws_api_gateway_rest_api.api.id
+    api_id = aws_api_gateway_rest_api.LambdasApi.id
     stage  = "default"
   }
 
@@ -31,12 +31,3 @@ resource "aws_api_gateway_usage_plan_key" "usage_plan_key" {
   key_type      = "API_KEY"
   usage_plan_id = aws_api_gateway_usage_plan.usage_plan.id
 }
-
-resource "aws_api_gateway_usage_plan_key" "usage_plan_key" {
-  key_id        = aws_api_gateway_api_key.api_key.id
-  key_type      = "API_KEY"
-  usage_plan_id = aws_api_gateway_usage_plan.usage_plan.id
-}
-
-
-
