@@ -7,12 +7,19 @@ resource "aws_api_gateway_api_key" "api_key" {
   name = "nexa-api-key"
 }
 
+resource "aws_api_gateway_stage" "default" {
+  deployment_id = aws_api_gateway_deployment.this.id
+  rest_api_id   = aws_api_gateway_rest_api.LambdasApi.id
+  stage_name    = "default"
+}
+
 resource "aws_api_gateway_usage_plan" "usage_plan" {
   name = "nexa-usage-plan"
+  depends_on = [aws_api_gateway_deployment.this]
 
   api_stages {
     api_id = aws_api_gateway_rest_api.LambdasApi.id
-    stage  = "default"
+    stage  = aws_api_gateway_stage.default.stage_name
   }
 
   quota_settings {
