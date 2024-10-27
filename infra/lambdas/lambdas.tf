@@ -29,7 +29,7 @@ resource "aws_api_gateway_method" "this" {
   resource_id   = aws_api_gateway_resource.this.id
   http_method   = var.httpMethod
   authorization = "NONE"  # No authorization for simplicity
-  api_key_required = true 
+  api_ke  
 }
 
 resource "aws_api_gateway_integration" "this" {
@@ -52,9 +52,9 @@ resource "aws_lambda_permission" "allow_apigateway" {
 
 resource "aws_api_gateway_deployment" "this" {
   rest_api_id = aws_api_gateway_rest_api.LambdasApi.id
-  stage_name  = "default"  # Single deployment stage
-  
+  stage_name  = "default"
+
   triggers = {
-    redeployment = sha1(jsonencode([aws_api_gateway_integration.this]))
+    redeployment = sha1(jsonencode([aws_api_gateway_method.this, aws_api_gateway_integration.this]))
   }
 }
