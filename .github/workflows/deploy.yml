@@ -16,7 +16,7 @@ jobs:
       - name: Execute Terraform Commands
         run: |
           ssh -i ~/.ssh/deploy_key ${{ secrets.SSH_USER }}@${{ secrets.AWS_HOST }} '
-            if [ -d "~/deployment" ]; then
+            if [ -d ~/deployment ]; then
               echo "Directory exists, pulling latest changes..."
               cd ~/deployment
               git pull

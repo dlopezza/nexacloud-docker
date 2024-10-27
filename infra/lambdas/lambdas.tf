@@ -29,6 +29,7 @@ resource "aws_api_gateway_method" "this" {
   resource_id   = aws_api_gateway_resource.this.id
   http_method   = var.httpMethod
   authorization = "NONE"  # No authorization for simplicity
+  api_key_required = true 
 }
 
 resource "aws_api_gateway_integration" "this" {
