@@ -11,7 +11,7 @@ resource "aws_api_gateway_stage" "default" {
   deployment_id = aws_api_gateway_deployment.this.id
   rest_api_id   = aws_api_gateway_rest_api.LambdasApi.id
   stage_name    = "default"
-  depends_on    = []
+  depends_on    = [aws_api_gateway_deployment.this]
 }
 
 resource "aws_api_gateway_usage_plan" "usage_plan" {

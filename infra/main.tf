@@ -50,9 +50,9 @@ locals {
   env_vars = {
     COMPANY_NAME              = "nexa in docker"
     AWS_S3_LAMBDA_URL         = module.imagesLambda.api_gateway_url
-    AWS_S3_LAMBDA_APIKEY      = module.imagesLambda.api_key.value
+    AWS_S3_LAMBDA_APIKEY      = module.imagesLambda.api_key
     AWS_DB_LAMBDA_URL         = module.add_row_to_db_lambda.api_gateway_url
-    AWS_DB_LAMBDA_APIKEY      = module.add_row_to_db_lambda.api_key.value
+    AWS_DB_LAMBDA_APIKEY      = module.add_row_to_db_lambda.api_key
     DB_USER                   = var.db_username
     DB_PASSWORD               = var.db_password
     DB_HOST                   = module.db.db_endpoint
