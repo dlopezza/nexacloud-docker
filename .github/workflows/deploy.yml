@@ -15,20 +15,20 @@ jobs:
           chmod 600 ~/.ssh/deploy_key
           ssh-keyscan -H ${{ secrets.AWS_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Check for and remove existing infra folder on EC2 instance
+      - name: Delete existing infra directory on EC2 instance (if any) and recreate it
         run: |
           ssh -i ~/.ssh/deploy_key ${{ secrets.SSH_USER }}@${{ secrets.AWS_HOST }} '
             if [ -d ~/infra ]; then
               echo "Existing infra folder found. Deleting..."
               rm -rf ~/infra
-            else
-              echo "No existing infra folder found. Proceeding with deployment."
             fi
+            echo "Creating a fresh infra directory..."
+            mkdir ~/infra
           '
 
       - name: Copy infra folder to EC2 instance
         run: |
-          scp -i ~/.ssh/deploy_key -r infra ${{ secrets.SSH_USER }}@${{ secrets.AWS_HOST }}:
+          scp -i ~/.ssh/deploy_key -r infra/* ${{ secrets.SSH_USER }}@${{ secrets.AWS_HOST }}:~/infra
 
       - name: Run Terraform Commands on EC2 instance
         run: |
