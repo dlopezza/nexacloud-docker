@@ -8,6 +8,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
       - name: Set up SSH key and known hosts
         run: |
           mkdir -p ~/.ssh
@@ -28,7 +31,7 @@ jobs:
 
       - name: Copy infra folder to EC2 instance
         run: |
-          scp -i ~/.ssh/deploy_key -r infra/* ${{ secrets.SSH_USER }}@${{ secrets.AWS_HOST }}:~/infra
+          scp -i ~/.ssh/deploy_key -r infra ${{ secrets.SSH_USER }}@${{ secrets.AWS_HOST }}:~/infra
 
       - name: Run Terraform Commands on EC2 instance
         run: |
