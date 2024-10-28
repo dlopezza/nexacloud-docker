@@ -1,6 +1,11 @@
 name: Remote Terraform Apply
 on:
   workflow_dispatch:
+    inputs:
+      branch:
+        description: "Branch to deploy"
+        required: true
+        default: "main"
 
 jobs:
   deploy:
@@ -15,14 +20,18 @@ jobs:
 
       - name: Execute Terraform Commands
         run: |
+          BRANCH=${{ github.event.inputs.branch }}
+
           ssh -i ~/.ssh/deploy_key ${{ secrets.SSH_USER }}@${{ secrets.AWS_HOST }} '
             if [ -d ~/deployment ]; then
-              echo "Directory exists, pulling latest changes..."
+              echo "Directory exists, pulling latest changes from branch $BRANCH..."
               cd ~/deployment
-              git pull
+              git fetch origin
+              git checkout $BRANCH
+              git pull origin $BRANCH
             else
-              echo "Directory does not exist, cloning repository..."
-              git clone ${{ github.server_url }}/${{ github.repository }} ~/deployment
+              echo "Directory does not exist, cloning repository from branch $BRANCH..."
+              git clone --branch $BRANCH ${{ github.server_url }}/${{ github.repository }} ~/deployment
             fi
             
             # Navigate to infrastructure directory and run terraform commands
