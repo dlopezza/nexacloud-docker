@@ -32,6 +32,10 @@ resource "aws_api_gateway_usage_plan" "usage_plan" {
     burst_limit = 100
     rate_limit  = 50
   }
+
+  lifecycle {
+  create_before_destroy = true
+  }
 }
 
 resource "aws_api_gateway_usage_plan_key" "usage_plan_key" {
