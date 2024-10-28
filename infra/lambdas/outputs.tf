@@ -5,5 +5,5 @@ output "api_gateway_url" {
 
 output "api_key" {
   description = "The API key for accessing the API Gateway"
-  value       = aws_api_gateway_api_key.api_key.id
+  value       = aws_api_gateway_api_key.api_key.value
 }

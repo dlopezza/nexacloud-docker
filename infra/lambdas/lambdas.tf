@@ -52,9 +52,12 @@ resource "aws_lambda_permission" "allow_apigateway" {
 
 resource "aws_api_gateway_deployment" "this" {
   rest_api_id = aws_api_gateway_rest_api.LambdasApi.id
-  stage_name  = aws_api_gateway_stage.default.stage_name
 
   triggers = {
     redeployment = sha1(jsonencode([aws_api_gateway_method.this, aws_api_gateway_integration.this]))
+  }
+
+  lifecycle {
+    create_before_destroy = true
   }
 }
