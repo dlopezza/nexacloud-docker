@@ -1,43 +1,39 @@
 name: Remote Terraform Apply
+
 on:
   workflow_dispatch:
-    inputs:
-      branch:
-        description: "Branch to deploy"
-        required: true
-        default: "main"
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Create SSH key
+      - name: Set up SSH key and known hosts
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
           ssh-keyscan -H ${{ secrets.AWS_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Execute Terraform Commands
+      - name: Check for and remove existing infra folder on EC2 instance
         run: |
-          BRANCH=${{ github.event.inputs.branch }}
-
           ssh -i ~/.ssh/deploy_key ${{ secrets.SSH_USER }}@${{ secrets.AWS_HOST }} '
-            if [ -d ~/deployment ]; then
-              echo "Directory exists, pulling latest changes from branch $BRANCH..."
-              cd ~/deployment
-              git fetch origin
-              git checkout $BRANCH
-              git pull origin $BRANCH
+            if [ -d ~/infra ]; then
+              echo "Existing infra folder found. Deleting..."
+              rm -rf ~/infra
             else
-              echo "Directory does not exist, cloning repository from branch $BRANCH..."
-              git clone --branch $BRANCH ${{ github.server_url }}/${{ github.repository }} ~/deployment
+              echo "No existing infra folder found. Proceeding with deployment."
             fi
-            
-            # Navigate to infrastructure directory and run terraform commands
-            cd ~/deployment/infra
-            
-            # Initialize and apply
+          '
+
+      - name: Copy infra folder to EC2 instance
+        run: |
+          scp -i ~/.ssh/deploy_key -r infra ${{ secrets.SSH_USER }}@${{ secrets.AWS_HOST }}:/home/${{ secrets.SSH_USER }}/
+
+      - name: Run Terraform Commands on EC2 instance
+        run: |
+          ssh -i ~/.ssh/deploy_key ${{ secrets.SSH_USER }}@${{ secrets.AWS_HOST }} '
+            cd ~/infra
             terraform init
             terraform apply -auto-approve
           '
