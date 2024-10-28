@@ -28,7 +28,7 @@ jobs:
 
       - name: Copy infra folder to EC2 instance
         run: |
-          scp -i ~/.ssh/deploy_key -r infra ${{ secrets.SSH_USER }}@${{ secrets.AWS_HOST }}:/home/${{ secrets.SSH_USER }}/
+          scp -i ~/.ssh/deploy_key -r infra ${{ secrets.SSH_USER }}@${{ secrets.AWS_HOST }}:
 
       - name: Run Terraform Commands on EC2 instance
         run: |
