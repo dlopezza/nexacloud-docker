@@ -23,5 +23,4 @@ variable "db_port"{
 
 variable "environment"{
   type        = string
-  default     = "dev"
 }

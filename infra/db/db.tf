@@ -24,7 +24,7 @@ resource "aws_db_subnet_group" "db_subnet_group" {
   description = "RDS Subnet Group for single-instance database"
 
   tags = {
-    Name = "sb_subnet_group"
+    Name = "sb_subnet_group-${var.environment}"
   }
 }
 

@@ -18,7 +18,7 @@ resource "aws_internet_gateway" "igw" {
 
 module "subnets" {
   source = "./subnets"
-
+  environment              = var.environment
   vpc_id                   = aws_vpc.vpc.id
   vpc_name                 = aws_vpc.vpc.tags["Name"]
   public_subnet_cidr_block = var.public_subnet_cidr_block

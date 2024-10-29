@@ -45,3 +45,7 @@ variable "instance_profile"{
     type = string
     default = "LabInstanceProfile"
 }
+
+variable "environment"{
+  type        = string
+}
