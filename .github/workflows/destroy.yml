@@ -1,6 +1,14 @@
 name: Remote Terraform Destroy
 on:
   workflow_dispatch:
+    inputs:
+      environment:
+        description: "Environment to deploy (dev/prod)"
+        required: true
+        type: choice
+        options:
+          - dev
+          - prod
 
 jobs:
   destroy:
@@ -18,7 +26,7 @@ jobs:
           ssh -i ~/.ssh/deploy_key ${{ secrets.SSH_USER }}@${{ secrets.AWS_HOST }} '
 
           # Navigate to infrastructure directory and run terraform commands
-            cd ~/infra
+            cd ~/infra/environments/${{ github.event.inputs.environment }}
             terraform init
             terraform destroy -auto-approve
           '
