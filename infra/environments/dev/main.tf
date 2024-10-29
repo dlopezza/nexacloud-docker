@@ -13,7 +13,7 @@ terraform {
 
 provider "aws" {
   region = "us-east-1"
-  
+
   default_tags {
     tags = {
       Environment = var.environment
@@ -25,7 +25,7 @@ provider "aws" {
 
 module "vpc" {
   source = "../../vpc"
-
+  environment                = var.environment
   vpc_name                   = "vpc_terraproject"  
   vpc_cidr_block             = "10.0.0.0/16"
   public_subnet_cidr_block   = "10.0.1.0/24"
@@ -37,6 +37,7 @@ module "vpc" {
 
 module "db"{
     source           = "../../db"
+    environment      = var.environment
     subnet_ids       = module.vpc.private_subnets
     vpc_id           = module.vpc.vpc_id
     port             = var.db_port
@@ -50,6 +51,7 @@ module "db"{
 
 module "buckets"{
   source             =  "../../buckets"
+  environment        = var.environment
   docker_bucket_name = "dockerbucket"
   images_bucket_name = "imagesbucket"
 }
@@ -73,6 +75,7 @@ locals {
 
 module "app"{
   source            = "../../app"
+  environment       = var.environment
   env_vars          = local.env_vars
   vpc_id            = module.vpc.vpc_id
   port              = 80
@@ -86,6 +89,7 @@ module "app"{
 
 module "imagesLambda"{
   source          = "../../lambdas"
+  environment     = var.environment
   function_name   = "imagesLambda"
   filename        = "./resources/s3Listing.zip"
   role            = "arn:aws:iam::892672557072:role/LabRole"
@@ -99,7 +103,8 @@ module "imagesLambda"{
 }
 
 module "add_row_to_db_lambda" {
-  source          = "../../lambdas"  # Adjust path if necessary
+  source          = "../../lambdas"
+  environment     = var.environment
   filename        = "./resources/lambdaDatabaseJS.zip"
   function_name   = "add-row-to-db"
   role            = "arn:aws:iam::892672557072:role/LabRole"
