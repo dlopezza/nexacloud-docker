@@ -16,7 +16,7 @@ provider "aws" {
 }
 
 module "vpc" {
-  source = "./vpc"
+  source = "../../vpc"
 
   vpc_name                   = "vpc_terraproject"  
   vpc_cidr_block             = "10.0.0.0/16"
@@ -28,7 +28,7 @@ module "vpc" {
 }
 
 module "db"{
-    source           = "./db"
+    source           = "../../db"
     subnet_ids       = module.vpc.private_subnets
     vpc_id           = module.vpc.vpc_id
     port             = var.db_port
@@ -41,7 +41,7 @@ module "db"{
 }
 
 module "buckets"{
-  source             =  "./buckets"
+  source             =  "../../buckets"
   docker_bucket_name = "dockerbucket"
   images_bucket_name = "imagesbucket"
 }
@@ -64,7 +64,7 @@ locals {
 }
 
 module "app"{
-  source            = "./app"
+  source            = "../../app"
   env_vars          = local.env_vars
   vpc_id            = module.vpc.vpc_id
   port              = 80
@@ -77,9 +77,9 @@ module "app"{
 }
 
 module "imagesLambda"{
-  source          = "./lambdas"
+  source          = "../../lambdas"
   function_name   = "imagesLambda"
-  filename        = "s3Listing.zip"
+  filename        = "../../resources/s3Listing.zip"
   role            = "arn:aws:iam::892672557072:role/LabRole"
   handler         = "s3Listing.handler"
   runtime         = "nodejs16.x"
@@ -91,8 +91,8 @@ module "imagesLambda"{
 }
 
 module "add_row_to_db_lambda" {
-  source          = "./lambdas"  # Adjust path if necessary
-  filename        = "lambdaDatabaseJS.zip"
+  source          = "../../lambdas"  # Adjust path if necessary
+  filename        = "../../resources/lambdaDatabaseJS.zip"
   function_name   = "add-row-to-db"
   role            = "arn:aws:iam::892672557072:role/LabRole"
   handler         = "index.lambdaHandler"

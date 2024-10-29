@@ -42,7 +42,7 @@ jobs:
       - name: Run Terraform Commands on EC2 instance
         run: |
           ssh -i ~/.ssh/deploy_key ${{ secrets.SSH_USER }}@${{ secrets.AWS_HOST }} '
-            cd ~/infra
+            cd ~/infra/environments/dev
             terraform init
             terraform apply -auto-approve
           '
