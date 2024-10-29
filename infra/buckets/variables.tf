@@ -9,3 +9,7 @@ variable "images_bucket_name" {
   default     = "imagesbucket"
   description = "name for the bucket used for saving the dockerrun file"
 }
+
+variable "environment"{
+  type        = string
+}

@@ -43,3 +43,6 @@ variable "igw_id" {
   description = "Id of the VPC internet gateway"
 }
 
+variable "environment"{
+  type        = string
+}

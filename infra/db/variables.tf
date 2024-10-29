@@ -51,4 +51,8 @@ variable "db_password" {
   default     = "nexapass"
 }
 
+variable "environment"{
+  type        = string
+}
+
 

@@ -1,21 +1,21 @@
 resource "aws_api_gateway_rest_api" "LambdasApi" {
-  name        = "LambdasApi"
+  name        = "LambdasApi-${var.environment}"
   description = "API Gateway for lambdas"
 }
 
 resource "aws_api_gateway_api_key" "api_key" {
-  name = "nexa-api-key"
+  name = "nexa-api-key-${var.environment}"
 }
 
 resource "aws_api_gateway_stage" "default" {
   deployment_id = aws_api_gateway_deployment.this.id
   rest_api_id   = aws_api_gateway_rest_api.LambdasApi.id
-  stage_name    = "default"
+  stage_name    = var.environment
   depends_on    = [aws_api_gateway_deployment.this]
 }
 
 resource "aws_api_gateway_usage_plan" "usage_plan" {
-  name = "nexa-usage-plan"
+  name = "nexa-usage-plan-${var.environment}"
   depends_on = [aws_api_gateway_deployment.this, aws_api_gateway_stage.default]
 
   api_stages {

@@ -6,7 +6,7 @@ resource "aws_subnet" "public_subnet" {
   map_public_ip_on_launch = true
 
   tags = {
-    Name = "${var.vpc_name}-public-subnet"
+    Name = "${var.vpc_name}-public-subnet-${var.environment}"
   }
 }
 
@@ -30,7 +30,7 @@ resource "aws_subnet" "private_subnet1" {
   availability_zone     = var.main_az
 
   tags = {
-    Name = "${var.vpc_name}-private-subnet1"
+    Name = "${var.vpc_name}-private-subnet1-${var.environment}"
   }
 }
 
@@ -40,7 +40,7 @@ resource "aws_subnet" "private_subnet2" {
   availability_zone     = var.replication_az
 
   tags = {
-    Name = "${var.vpc_name}-private-subnet2"
+    Name = "${var.vpc_name}-private-subnet2-${var.environment}"
   }
 }
 
@@ -53,7 +53,7 @@ resource "aws_nat_gateway" "nat_gateway" {
   subnet_id    = aws_subnet.public_subnet.id 
 
   tags = {
-    Name = "nat-gateway"
+    Name = "nat-gateway-${var.environment}"
   }
 }
 
@@ -67,7 +67,7 @@ resource "aws_route_table" "private_route_table" {
   }
 
   tags = {
-    Name = "private-route-table"
+    Name = "private-route-table-${var.environment}"
   }
 }
 

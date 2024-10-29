@@ -1,5 +1,5 @@
 resource "aws_security_group" "db_sg" {
-  name        = "db_sg"
+  name        = "db_sg-${var.environment}"
   description = "Security group for the db"
   vpc_id      = var.vpc_id
 
@@ -19,18 +19,18 @@ resource "aws_security_group" "db_sg" {
 }
 
 resource "aws_db_subnet_group" "db_subnet_group" {
-  name       = "db_subnet_group"
+  name       = "db_subnet_group-${var.environment}"
   subnet_ids = var.subnet_ids
   description = "RDS Subnet Group for single-instance database"
 
   tags = {
-    Name = "sb_subnet_group"
+    Name = "sb_subnet_group-${var.environment}"
   }
 }
 
 resource "aws_db_instance" "db" {
-  identifier             = var.db_identifier
-  db_name                = var.db_name
+  identifier             = "${var.db_identifier}${var.environment}"
+  db_name                = "${var.db_name}${var.environment}"
   instance_class         = var.instance_class
   allocated_storage       = 5
   engine                 = "postgres"
