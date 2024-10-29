@@ -2,6 +2,14 @@ name: Remote Terraform Apply
 
 on:
   workflow_dispatch:
+    inputs:
+      environment:
+        description: "Environment to deploy (dev/prod)"
+        required: true
+        type: choice
+        options:
+          - dev
+          - prod
 
 jobs:
   deploy:
@@ -42,7 +50,7 @@ jobs:
       - name: Run Terraform Commands on EC2 instance
         run: |
           ssh -i ~/.ssh/deploy_key ${{ secrets.SSH_USER }}@${{ secrets.AWS_HOST }} '
-            cd ~/infra/environments/dev
+            cd ~/infra/environments/${{ github.event.inputs.environment }}
             terraform init
             terraform apply -auto-approve
           '
