@@ -1,6 +1,6 @@
 resource "aws_lambda_function" "this" {
   filename      = var.filename
-  function_name = var.function_name
+  function_name = "${var.function_name}-${var.environment}"
   role          = var.role
   handler       = var.handler
   runtime       = var.runtime

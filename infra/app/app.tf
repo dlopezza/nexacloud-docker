@@ -4,7 +4,7 @@ data "aws_elastic_beanstalk_solution_stack" "docker_stack" {
 }
 
 resource "aws_security_group" "app_sg" {
-  name        = "app_sg"
+  name        = "app_sg-${var.environment}"
   description = "Security group for nexacloud beanstalk app"
   vpc_id      = var.vpc_id
 
@@ -24,7 +24,7 @@ resource "aws_security_group" "app_sg" {
 }
 
 resource "aws_elastic_beanstalk_application" "nexa-app" {
-  name        = "Nexa cloud app"
+  name        = "Nexa_cloud_app-${var.environment}"
   description = "Elastic Beanstalk Application for nexaCloud"
 
   appversion_lifecycle {
@@ -35,14 +35,14 @@ resource "aws_elastic_beanstalk_application" "nexa-app" {
 }
 
 resource "aws_elastic_beanstalk_application_version" "app_version" {
-  name        = "my-app-version-${timestamp()}"
+  name        = "my-app-version-${var.environment}-${timestamp()}"
   application = aws_elastic_beanstalk_application.nexa-app.name
   bucket      = var.docker_bucket
   key         = var.dockerrun_key
 }
 
 resource "aws_elastic_beanstalk_environment" "nexa-env" {
-  name                = "nexa-env"
+  name                = "nexa-env-${var.environment}"
   application         = aws_elastic_beanstalk_application.nexa-app.name
   solution_stack_name = data.aws_elastic_beanstalk_solution_stack.docker_stack.name
   version_label       = aws_elastic_beanstalk_application_version.app_version.name

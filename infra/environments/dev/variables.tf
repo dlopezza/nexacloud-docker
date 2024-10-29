@@ -20,3 +20,8 @@ variable "db_port"{
   type        = number
   default     = 9876
 }
+
+variable "environment"{
+  type        = string
+  default     = "dev"
+}

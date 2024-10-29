@@ -34,3 +34,7 @@ variable "replication_az" {
   type        = string
   description = "Availability zone for the replication subnet"
 }
+
+variable "environment"{
+  type        = string
+}

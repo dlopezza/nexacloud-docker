@@ -7,7 +7,7 @@ resource "random_string" "bucket_suffix" {
 }
 
 resource "aws_s3_bucket" "dockerBucket" {
-  bucket = "${var.docker_bucket_name}-${random_string.bucket_suffix.result}"
+  bucket = "${var.docker_bucket_name}-${var.environment}-${random_string.bucket_suffix.result}"
 }
 
 resource "aws_s3_object" "dockerrun" {
@@ -19,7 +19,7 @@ resource "aws_s3_object" "dockerrun" {
 }
 
 resource "aws_s3_bucket" "imagesBucket" {
-  bucket = "${var.images_bucket_name}-${random_string.bucket_suffix.result}"  # Corrected string interpolation
+  bucket = "${var.images_bucket_name}-${var.environment}-${random_string.bucket_suffix.result}"  # Corrected string interpolation
 }
 
 locals {

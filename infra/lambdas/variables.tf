@@ -49,3 +49,7 @@ variable "vpc_config" {
   })
   default = null
 }
+
+variable "environment"{
+  type        = string
+}
