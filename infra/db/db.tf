@@ -29,8 +29,8 @@ resource "aws_db_subnet_group" "db_subnet_group" {
 }
 
 resource "aws_db_instance" "db" {
-  identifier             = "${var.db_identifier}-${var.environment}"
-  db_name                = "${var.db_name}-${var.environment}"
+  identifier             = "${var.db_identifier}${var.environment}"
+  db_name                = "${var.db_name}${var.environment}"
   instance_class         = var.instance_class
   allocated_storage       = 5
   engine                 = "postgres"
