@@ -79,7 +79,7 @@ module "app"{
 module "imagesLambda"{
   source          = "../../lambdas"
   function_name   = "imagesLambda"
-  filename        = "../../resources/s3Listing.zip"
+  filename        = "./resources/s3Listing.zip"
   role            = "arn:aws:iam::892672557072:role/LabRole"
   handler         = "s3Listing.handler"
   runtime         = "nodejs16.x"
@@ -92,7 +92,7 @@ module "imagesLambda"{
 
 module "add_row_to_db_lambda" {
   source          = "../../lambdas"  # Adjust path if necessary
-  filename        = "../../resources/lambdaDatabaseJS.zip"
+  filename        = "./resources/lambdaDatabaseJS.zip"
   function_name   = "add-row-to-db"
   role            = "arn:aws:iam::892672557072:role/LabRole"
   handler         = "index.lambdaHandler"
