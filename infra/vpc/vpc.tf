@@ -57,6 +57,7 @@ resource "aws_route_table" "private_route_table" {
 module "public_subnets"{
   count             = var.subnet_count
   source            = "./subnet"
+  vpc_name          = var.vpc_name
   vpc_id            = aws_vpc.this.id
   cidr_block        = cidrsubnet(var.vpc_cidr_block, 8, count.index)
   az                = var.az
@@ -70,6 +71,7 @@ module "public_subnets"{
 module "private_subnets"{
   count             = var.subnet_count
   source            = "./subnet"
+  vpc_name          = var.vpc_name
   vpc_id            = aws_vpc.this.id
   cidr_block        = cidrsubnet(var.vpc_cidr_block, 8, count.index + var.subnet_count)
   az                = var.az
