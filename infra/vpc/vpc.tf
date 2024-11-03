@@ -30,10 +30,12 @@ resource "aws_route_table" "public_route_table" {
 resource "aws_eip" "nat_eip" {
 }
 
+#A  single NAT gateway is created for all private subnets, this could be refactored to 
+#create a 1-1 relation between nat gateways and private/public subnets
 resource "aws_nat_gateway" "this" {
   depends_on    = [module.public_subnets]
   allocation_id = aws_eip.nat_eip.id
-  subnet_id     = module.public_subnets.subnet_ids[0]
+  subnet_id     = module.public_subnets[0].subnet_id
 
   tags = {
     Name = "nat-gateway-${var.environment}"
