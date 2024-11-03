@@ -1,4 +1,4 @@
-output "subnet_ids" {
-  description = "List of subnet IDs"
-  value       = [for subnet in aws_subnet.this : subnet.id]
+output "subnet_id" {
+  description = "The ID of the subnet"
+  value       = aws_subnet.this.id
 }
