@@ -1,3 +1,8 @@
+variable "vpc_name"{
+  type        = string
+  description = "Name of the VPC"
+}
+
 variable "vpc_id" {
   type        = string
   description = "Id of the VPC"
