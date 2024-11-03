@@ -28,11 +28,9 @@ module "vpc" {
   environment                = var.environment
   vpc_name                   = "vpc_terraproject"  
   vpc_cidr_block             = "10.0.0.0/16"
-  public_subnet_cidr_block   = "10.0.1.0/24"
-  private_subnet1_cidr_block = "10.0.2.0/24"
-  private_subnet2_cidr_block = "10.0.3.0/24"
   main_az                    = "us-east-1a"
   replication_az             = "us-east-1b"
+  subnet_count               = 3
 }
 
 module "db"{
@@ -82,8 +80,8 @@ module "app"{
   service_role      = "arn:aws:iam::892672557072:role/LabRole"
   docker_bucket     = module.buckets.docker_bucket
   dockerrun_key     = module.buckets.dockerrun_key
-  public_subnet_id  = module.vpc.public_subnet_id
-  private_subnet_id = module.vpc.private_subnet1_id
+  public_subnet_id  = module.vpc.public_subnets[0]
+  private_subnet_id = module.vpc.private_subnets[0]
   instance_profile  = "LabInstanceProfile"
 }
 
