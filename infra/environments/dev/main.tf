@@ -28,7 +28,7 @@ module "vpc" {
   environment                = var.environment
   vpc_name                   = "vpc_terraproject"  
   vpc_cidr_block             = "10.0.0.0/16"
-  main_az                    = "us-east-1a"
+  az                         = "us-east-1a"
   replication_az             = "us-east-1b"
   subnet_count               = 3
 }
