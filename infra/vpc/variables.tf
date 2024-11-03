@@ -10,7 +10,7 @@ variable "vpc_cidr_block" {
   description = "CIDR block for the VPC"
 }
 
-variable "main_az" {
+variable "az" {
   type        = string
   description = "Availability zone for the main subnet"
 }
