@@ -1,4 +1,4 @@
 output "subnet_ids" {
   description = "List of subnet IDs"
-  value       = aws_subnet.this[*].id
+  value       = [for subnet in aws_subnet.this : subnet.id]
 }
