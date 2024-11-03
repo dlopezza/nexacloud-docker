@@ -58,7 +58,7 @@ module "public_subnets"{
   count             = var.subnet_count
   source            = "./subnet"
   vpc_id            = aws_vpc.this.id
-  cidr_block        = cidrsubnet(var.vpc_cidr, 8, count.index)
+  cidr_block        = cidrsubnet(var.vpc_cidr_block, 8, count.index)
   az                = var.az
   replication_az    = var.replication_az
   route_table       = aws_route_table.public_route_table.id
@@ -71,7 +71,7 @@ module "private_subnets"{
   count             = var.subnet_count
   source            = "./subnet"
   vpc_id            = aws_vpc.this.id
-  cidr_block        = cidrsubnet(var.vpc_cidr, 8, count.index + var.subnet_count)
+  cidr_block        = cidrsubnet(var.vpc_cidr_block, 8, count.index + var.subnet_count)
   az                = var.az
   replication_az    = var.replication_az
   route_table       = aws_route_table.private_route_table.id
