@@ -13,9 +13,18 @@ resource "aws_s3_bucket" "dockerBucket" {
 resource "aws_s3_object" "dockerrun" {
   bucket = aws_s3_bucket.dockerBucket.bucket
   key    = "Dockerrun.aws.json"
-  source = "${path.cwd}/resources/Dockerrun.aws.json"
-
-  etag = filemd5("${path.cwd}/resources/Dockerrun.aws.json")
+  content = jsonencode({
+    AWSEBDockerrunVersion = "1"
+    Image = {
+      Name = "${var.ecr_url}:latest"
+    }
+    Ports = [
+      {
+        ContainerPort = "3000"
+        HostPort      = "80"
+      }
+    ]
+  })
 }
 
 resource "aws_s3_bucket" "imagesBucket" {
