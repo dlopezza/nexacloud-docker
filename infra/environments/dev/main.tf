@@ -62,6 +62,9 @@ module "db"{
 module "ecr" {
   source            = "../../ecr"
   environment       = var.environment
+  providers = {
+    docker = docker
+  }
 }
 
 module "buckets"{
