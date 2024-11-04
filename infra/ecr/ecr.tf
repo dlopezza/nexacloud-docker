@@ -3,7 +3,7 @@ data "aws_ecr_authorization_token" "token" {}
 
 
 resource "aws_ecr_repository" "this" {
-  name = "repository-${var.environment}}"
+  name = "repository-${var.environment}"
 }
 
 resource "docker_image" "this" {

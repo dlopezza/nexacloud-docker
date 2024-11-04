@@ -63,7 +63,7 @@ module "ecr" {
   source            = "../../ecr"
   environment       = var.environment
   providers = {
-    docker = docker
+    docker = kreuzwerker.docker
   }
 }
 
