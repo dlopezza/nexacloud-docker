@@ -8,6 +8,10 @@ terraform {
       source  = "hashicorp/random"
       version = "~> 3.0"
     }
+    docker = {
+      source  = "kreuzwerker/docker"
+      version = "3.0.2"
+    }
   }
 }
 
@@ -47,11 +51,17 @@ module "db"{
     sg_cidr_blocks   = ["0.0.0.0/0"]
 }
 
+module "ecr" {
+  source            = "../../ecr"
+  environment       = var.environment
+}
+
 module "buckets"{
   source             =  "../../buckets"
   environment        = var.environment
   docker_bucket_name = "dockerbucket"
   images_bucket_name = "imagesbucket"
+  ecr_url            = module.ecr.repository_url
 }
 
 locals {

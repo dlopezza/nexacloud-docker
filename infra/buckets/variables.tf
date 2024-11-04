@@ -13,3 +13,7 @@ variable "images_bucket_name" {
 variable "environment"{
   type        = string
 }
+
+variable "ecr_url"{
+  type        = string
+}
