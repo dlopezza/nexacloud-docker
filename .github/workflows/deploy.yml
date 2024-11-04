@@ -35,15 +35,28 @@ jobs:
             else
               echo "Infra directory already exists. No action taken."
             fi
+
+            if [ ! -d ~/application ]; then
+              echo "Creating application directory..."
+              mkdir ~/application
+            else
+              echo "application directory already exists. No action taken."
+            fi
           '
 
-      - name: Copy infra folder to EC2 instance
+      - name: Copy infra and app folders to EC2 instance
         run: |
           # Check if the infra directory exists in the GitHub Actions runner
           if [ -d infra ]; then
             scp -i ~/.ssh/deploy_key -r infra/* ${{ secrets.SSH_USER }}@${{ secrets.AWS_HOST }}:~/infra
           else
             echo "Error: infra directory does not exist in the repository."
+            exit 1
+
+          if [ -d application ]; then
+            scp -i ~/.ssh/deploy_key -r application/* ${{ secrets.SSH_USER }}@${{ secrets.AWS_HOST }}:~/application
+          else
+            echo "Error: application directory does not exist in the repository."
             exit 1
           fi
 
