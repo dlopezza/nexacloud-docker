@@ -26,22 +26,17 @@ jobs:
           chmod 600 ~/.ssh/deploy_key
           ssh-keyscan -H ${{ secrets.AWS_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Ensure infra directory exists on EC2 instance
+      - name: Ensure infra and application directories exist on EC2 instance
         run: |
           ssh -i ~/.ssh/deploy_key ${{ secrets.SSH_USER }}@${{ secrets.AWS_HOST }} '
-            if [ ! -d ~/infra ]; then
-              echo "Creating infra directory..."
-              mkdir ~/infra
-            else
-              echo "Infra directory already exists. No action taken."
-            fi
-
-            if [ ! -d ~/application ]; then
-              echo "Creating application directory..."
-              mkdir ~/application
-            else
-              echo "application directory already exists. No action taken."
-            fi
+            for dir in ~/infra ~/application; do
+              if [ ! -d "$dir" ]; then
+                echo "Creating directory: $dir"
+                mkdir "$dir"
+              else
+                echo "Directory already exists: $dir"
+              fi
+            done
           '
 
       - name: Copy infra and app folders to EC2 instance
@@ -52,6 +47,7 @@ jobs:
           else
             echo "Error: infra directory does not exist in the repository."
             exit 1
+          fi
 
           if [ -d application ]; then
             scp -i ~/.ssh/deploy_key -r application/* ${{ secrets.SSH_USER }}@${{ secrets.AWS_HOST }}:~/application
