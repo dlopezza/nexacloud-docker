@@ -27,7 +27,7 @@ resource "aws_security_group" "github_actions_sg" {
 
 resource "aws_instance" "bastion" {
   ami           = "ami-01e3c4a339a264cc9"
-  instance_type = "t3.micro"
+  instance_type = "t3.medium"
   key_name      = "githubKey"
   security_groups = [aws_security_group.github_actions_sg.name]
   iam_instance_profile = "LabInstanceProfile"
