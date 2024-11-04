@@ -30,7 +30,7 @@ module "vpc" {
   vpc_cidr_block             = "10.0.0.0/16"
   az                         = "us-east-1a"
   replication_az             = "us-east-1b"
-  subnet_count               = 3
+  subnet_count               = 2
 }
 
 module "db"{
