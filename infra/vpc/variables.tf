@@ -10,22 +10,7 @@ variable "vpc_cidr_block" {
   description = "CIDR block for the VPC"
 }
 
-variable "public_subnet_cidr_block" {
-  type        = string
-  description = "CIDR block for the public subnet"
-}
-
-variable "private_subnet1_cidr_block" {
-  type        = string
-  description = "CIDR block for the first private subnet"
-}
-
-variable "private_subnet2_cidr_block" {
-  type        = string
-  description = "CIDR block for the second private subnet"
-}
-
-variable "main_az" {
+variable "az" {
   type        = string
   description = "Availability zone for the main subnet"
 }
@@ -37,4 +22,9 @@ variable "replication_az" {
 
 variable "environment"{
   type        = string
+}
+variable "subnet_count"{
+  type        = number
+  description = "ammount of subnets to create for each type"
+  default     = 2
 }
