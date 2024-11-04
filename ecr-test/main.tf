@@ -27,13 +27,17 @@ resource "aws_ecr_repository" "repository" {
   name = "myapp"
 }
 
-resource "docker_registry_image" "backend" {
-  name = "${aws_ecr_repository.repository.repository_url}:latest"
-
+resource "docker_image" "this" {
+  name = "  myapp:latest"
   build {
     context    = "../app"
     dockerfile = "dockerfile"
   }
+}
+
+resource "docker_registry_image" "this" {
+  name          = docker_image.this.name
+  keep_remotely = false
 }
 
 output "repository_url" {
