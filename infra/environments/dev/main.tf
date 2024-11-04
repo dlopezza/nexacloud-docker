@@ -50,6 +50,7 @@ module "db"{
 module "ecr" {
   source            = "../../ecr"
   environment       = var.environment
+  region            = "us-east-1"
 }
 
 module "buckets"{
