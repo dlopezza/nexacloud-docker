@@ -24,7 +24,7 @@ resource "aws_ecr_repository" "this" {
 }
 
 resource "docker_image" "this" {
-  name = "${aws_ecr_repository.repository.repository_url}:latest" 
+  name = "${aws_ecr_repository.this.repository_url}:latest" 
   build {
     context    = "../../../application"
     dockerfile = "dockerfile"
