@@ -53,11 +53,6 @@ module "db"{
     sg_cidr_blocks   = ["0.0.0.0/0"]
 }
 
-module "ecr" {
-  source            = "../../ecr"
-  environment       = var.environment
-  region            = "us-east-1"
-}
 
 module "buckets"{
   source             =  "../../buckets"
