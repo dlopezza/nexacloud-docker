@@ -22,7 +22,7 @@ resource "aws_launch_template" "this" {
   name_prefix   = "elb-template-${var.environment}"
   image_id      = "ami-01e3c4a339a264cc9"
   instance_type = "t3.micro"
-  user_data     = <<-EOF
+  user_data     = base64encode(<<-EOF
     #!/bin/bash
     sudo yum update -y
     sudo yum install -y httpd
@@ -30,6 +30,7 @@ resource "aws_launch_template" "this" {
     sudo systemctl enable httpd
     echo "<h1>Hello World from $(hostname -f)</h1>" > /var/www/html/index.html
   EOF
+  )
 
   network_interfaces {
     associate_public_ip_address = false
