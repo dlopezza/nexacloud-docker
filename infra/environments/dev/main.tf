@@ -23,11 +23,11 @@ provider "aws" {
   }
 }
 
-# module "ecr" {
-#   source            = "../../ecr"
-#   environment       = var.environment
-#   region            = "us-east-1"
-# }
+module "ecr" {
+  source            = "../../ecr"
+  environment       = var.environment
+  region            = "us-east-1"
+}
 
 module "vpc" {
   source = "../../vpc"
@@ -52,9 +52,6 @@ module "db"{
     db_password      = var.db_password
     sg_cidr_blocks   = ["0.0.0.0/0"]
 }
-
-
-
 */
 
 module "buckets"{
