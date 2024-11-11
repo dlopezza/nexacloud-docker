@@ -4,17 +4,17 @@ resource "aws_security_group" "elb_sg" {
 
   ingress {
     description      = "Allow HTTP requests from anywhere"
-    protocol         = "tcp"
+    protocol         = "tcp" 
     from_port        = 80
     to_port          = 80
     cidr_blocks      = ["0.0.0.0/0"]
   }
 
   egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    security_groups = [aws_security_group.this.id]
   }
 }
 
