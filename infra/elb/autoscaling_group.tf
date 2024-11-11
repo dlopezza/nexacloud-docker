@@ -26,10 +26,11 @@ resource "aws_launch_template" "this" {
   user_data     = base64encode(<<-EOF
     #!/bin/bash
     sudo yum update -y
-    sudo yum install -y httpd
-    sudo systemctl start httpd
-    sudo systemctl enable httpd
-    echo "<h1>Hello World from $(hostname -f)</h1>" > /var/www/html/index.html
+    sudo amazon-linux-extras enable nginx1
+    sudo yum install -y nginx
+    sudo systemctl start nginx
+    sudo systemctl enable nginx
+    echo "<h1>Hello World from $(hostname -f)</h1>" | sudo tee /usr/share/nginx/html/index.html
   EOF
   )
 
