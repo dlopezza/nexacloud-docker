@@ -31,7 +31,7 @@ resource "aws_launch_template" "this" {
   name_prefix   = "elb-template-${var.environment}"
   image_id      = "ami-01e3c4a339a264cc9"
   instance_type = "t3.micro"
-  key_name = "your-ssh-key-name"
+  key_name = "vockey"
   user_data     = base64encode(<<-EOF
     #!/bin/bash
     sudo yum update -y
