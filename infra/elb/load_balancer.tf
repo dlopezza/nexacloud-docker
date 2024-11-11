@@ -4,7 +4,7 @@ resource "aws_security_group" "elb_sg" {
 
   ingress {
     description      = "Allow HTTP requests from anywhere"
-    protocol         = "tcp"
+    protocol         = "-1" #"tcp"
     from_port        = 80
     to_port          = 80
     cidr_blocks      = ["0.0.0.0/0"]
@@ -29,12 +29,13 @@ resource "aws_lb" "this" {
 resource "aws_lb_target_group" "this" {
   name     = "nexa-tg-${var.environment}"
   port     = 80
-  protocol = "HTTP"
+  protocol = "TCP"
   vpc_id   = var.vpc_id
+  target_type = "instance"
 
   health_check {
     path                = "/"
-    protocol            = "HTTP"
+    protocol            = "TCP"
     interval            = 30
     timeout             = 5
     healthy_threshold   = 3
@@ -45,7 +46,7 @@ resource "aws_lb_target_group" "this" {
 resource "aws_lb_listener" "this" {
   load_balancer_arn = aws_lb.this.arn
   port              = "80"
-  protocol          = "HTTP"
+  protocol          = "TCP"
   
   default_action {
     type             = "forward"

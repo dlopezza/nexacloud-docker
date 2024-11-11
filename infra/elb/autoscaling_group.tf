@@ -51,7 +51,7 @@ resource "aws_autoscaling_group" "this" {
   name             = "autoscaling-group-${var.environment}"
   desired_capacity = 2
   max_size         = 2
-  min_size         = 1
+  min_size         = 2
 
   target_group_arns = [aws_lb_target_group.this.arn]
 
