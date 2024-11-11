@@ -4,9 +4,9 @@ resource "aws_security_group" "elb_sg" {
 
   ingress {
     description      = "Allow HTTP requests from anywhere"
-    protocol         = "-1" #"tcp"
-    from_port        = 0
-    to_port          = 0
+    protocol         = "tcp"
+    from_port        = 80
+    to_port          = 80
     cidr_blocks      = ["0.0.0.0/0"]
   }
 
@@ -23,7 +23,7 @@ resource "aws_lb" "this" {
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.elb_sg.id]
-  subnets            = var.subnets_ids
+  subnets            = var.public_subnets_ids
 }
 
 resource "aws_lb_target_group" "this" {

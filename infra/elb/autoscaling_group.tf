@@ -4,21 +4,12 @@ resource "aws_security_group" "this" {
 
   ingress {
     description     = "Allow HTTP request from Load Balancer"
-    protocol        = "-1"
-    from_port       = 0 #80
-    to_port         = 0 #80
-    #security_groups = [aws_security_group.elb_sg.id]
-    cidr_blocks = ["0.0.0.0/0"]
+    protocol        = "tcp"
+    from_port       = 80
+    to_port         = 80
+    security_groups = [aws_security_group.elb_sg.id]
   }
   
-  ingress {
-    description     = "Allow SSH from Anywhere"
-    protocol        = "tcp"
-    from_port       = 22   # SSH port
-    to_port         = 22
-    cidr_blocks     = ["0.0.0.0/0"]  # You can replace this with a more restricted IP range
-  }
-
   egress {
     from_port   = 0
     to_port     = 0
@@ -31,7 +22,7 @@ resource "aws_launch_template" "this" {
   name_prefix   = "elb-template-${var.environment}"
   image_id      = "ami-01e3c4a339a264cc9"
   instance_type = "t3.micro"
-  key_name = "vockey"
+  key_name      = "vockey"
   user_data     = base64encode(<<-EOF
     #!/bin/bash
     sudo yum update -y
@@ -43,11 +34,8 @@ resource "aws_launch_template" "this" {
   EOF
   )
 
-  network_interfaces {
-    associate_public_ip_address = true
-    subnet_id                   = var.subnets_ids[0]
-    security_groups             = [aws_security_group.this.id]
-  }
+  # Specify security group
+  vpc_security_group_ids = [aws_security_group.this.id]
 
   tag_specifications {
     resource_type = "instance"
@@ -57,6 +45,7 @@ resource "aws_launch_template" "this" {
   }
 }
 
+
 resource "aws_autoscaling_group" "this" {
   name             = "autoscaling-group-${var.environment}"
   desired_capacity = 2
@@ -65,7 +54,7 @@ resource "aws_autoscaling_group" "this" {
 
   target_group_arns = [aws_lb_target_group.this.arn]
 
-  vpc_zone_identifier = var.subnets_ids
+  vpc_zone_identifier = var.private_subnets_ids
 
   launch_template {
     id      = aws_launch_template.this.id

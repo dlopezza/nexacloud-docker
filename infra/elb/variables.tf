@@ -2,7 +2,12 @@ variable environment {
   type        = string
 }
 
-variable subnets_ids {
+variable public_subnets_ids {
+  type        = list(string)
+  description = "List of subnets to use for the load balancer"
+}
+
+variable private_subnets_ids{
   type        = list(string)
   description = "List of subnets to use for the load balancer"
 }
