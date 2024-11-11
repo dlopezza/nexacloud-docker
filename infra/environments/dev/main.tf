@@ -75,7 +75,7 @@ locals {
     #DB_DATABASE               = var.db_name
     #DB_PORT                   = var.db_port
     STRESS_PATH               ="/usr/bin/stress"
-    LOAD_BALANCER_IFRAME_URL  =  module.load_balancer.load_balancer_url
+    LOAD_BALANCER_IFRAME_URL  =  "${module.load_balancer.load_balancer_url}"
   }
 }
 
