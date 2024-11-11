@@ -10,6 +10,14 @@ resource "aws_security_group" "this" {
     #security_groups = [aws_security_group.elb_sg.id]
     cidr_blocks = ["0.0.0.0/0"]
   }
+  
+  ingress {
+    description     = "Allow SSH from Anywhere"
+    protocol        = "tcp"
+    from_port       = 22   # SSH port
+    to_port         = 22
+    cidr_blocks     = ["0.0.0.0/0"]  # You can replace this with a more restricted IP range
+  }
 
   egress {
     from_port   = 0
@@ -23,6 +31,7 @@ resource "aws_launch_template" "this" {
   name_prefix   = "elb-template-${var.environment}"
   image_id      = "ami-01e3c4a339a264cc9"
   instance_type = "t3.micro"
+  key_name = "your-ssh-key-name"
   user_data     = base64encode(<<-EOF
     #!/bin/bash
     sudo yum update -y
@@ -35,7 +44,7 @@ resource "aws_launch_template" "this" {
   )
 
   network_interfaces {
-    associate_public_ip_address = false
+    associate_public_ip_address = true
     subnet_id                   = var.subnets_ids[0]
     security_groups             = [aws_security_group.this.id]
   }
