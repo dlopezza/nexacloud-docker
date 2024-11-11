@@ -4,9 +4,9 @@ resource "aws_security_group" "this" {
 
   ingress {
     description     = "Allow HTTP request from Load Balancer"
-    protocol        = "HTTP"
-    from_port       = 80
-    to_port         = 80
+    protocol        = "'1'"
+    from_port       = 0 #80
+    to_port         = 0 #80
     #security_groups = [aws_security_group.elb_sg.id]
     cidr_blocks = ["0.0.0.0/0"]
   }
