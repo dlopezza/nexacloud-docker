@@ -133,8 +133,9 @@ module "add_row_to_db_lambda" {
 */
 
 module "load_balancer" {
-  source           = "../../elb"
-  environment      = var.environment
-  subnets_ids      = module.vpc.public_subnets
-  vpc_id           = module.vpc.vpc_id
+  source              = "../../elb"
+  environment         = var.environment
+  public_subnets_ids  = module.vpc.public_subnets
+  private_subnets_ids = module.vpc.public_subnets
+  vpc_id              = module.vpc.vpc_id
 }
