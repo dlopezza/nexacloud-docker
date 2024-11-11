@@ -5,8 +5,8 @@ resource "aws_security_group" "elb_sg" {
   ingress {
     description      = "Allow HTTP requests from anywhere"
     protocol         = "-1" #"tcp"
-    from_port        = 80
-    to_port          = 80
+    from_port        = 0
+    to_port          = 0
     cidr_blocks      = ["0.0.0.0/0"]
   }
 
