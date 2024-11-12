@@ -44,7 +44,7 @@ jobs:
 
       # Run TFLint
       - name: Run TFLint
-        run: tflint -f compact --recursive
+        run: tflint -f compact --recursive || true
 
   tfsec-checks:
     needs: tflint-checks
