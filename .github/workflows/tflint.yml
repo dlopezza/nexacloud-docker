@@ -1,4 +1,5 @@
-name: Tflint Checks on Terraform Code
+name: Terraform Code Checks
+
 on:
   workflow_dispatch:
     inputs:
@@ -20,13 +21,14 @@ jobs:
       - name: Check out Git Repository
         uses: actions/checkout@v3
 
-      # TFLint - Terraform Check
+      # Cache TFLint plugins
       - uses: actions/cache@v2
         name: Cache plugin dir
         with:
           path: ~/.tflint.d/plugins
-          key: ${{ matrix.os }}-tflint-${{ hashFiles('.tflint.hcl') }}
+          key: ${{ runner.os }}-tflint-${{ hashFiles('.tflint.hcl') }}
 
+      # Setup TFLint
       - uses: terraform-linters/setup-tflint@v2
         name: Setup TFLint
         with:
@@ -36,10 +38,22 @@ jobs:
       - name: Show version
         run: tflint --version
 
-      # Install plugins
+      # Install TFLint plugins
       - name: Init TFLint
         run: tflint --init
 
-      # Run tflint command in each directory recursively # use --force if you want to continue with workflow although errors are there
+      # Run TFLint
       - name: Run TFLint
         run: tflint -f compact --recursive
+
+  tfsec-checks:
+    needs: tflint-checks
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout Repository
+      - name: Check out Git Repository
+        uses: actions/checkout@v2
+
+      # Run Tfsec
+      - name: Run Tfsec
+        uses: aquasecurity/tfsec-action@v1.0.0
