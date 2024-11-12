@@ -23,11 +23,11 @@ provider "aws" {
   }
 }
 
-module "ecr" {
-  source            = "../../ecr"
-  environment       = var.environment
-  region            = "us-east-1"
-}
+# module "ecr" {
+#   source            = "../../ecr"
+#   environment       = var.environment
+#   region            = "us-east-1"
+# }
 
 module "vpc" {
   source = "../../vpc"
@@ -38,7 +38,7 @@ module "vpc" {
   replication_az             = "us-east-1b"
   subnet_count               = 2
 }
-
+/*
 module "db"{
     source           = "../../db"
     environment      = var.environment
@@ -125,8 +125,17 @@ module "add_row_to_db_lambda" {
     DB_NAME        = var.db_name
     DB_PORT        = var.db_port
   }
-    vpc_config = {
+  vpc_config = {
     subnet_ids         = module.vpc.private_subnets
     security_group_ids = [module.db.sg_id]
   }
+}
+*/
+
+module "load_balancer" {
+  source              = "../../elb"
+  environment         = var.environment
+  public_subnets_ids  = module.vpc.public_subnets
+  private_subnets_ids = module.vpc.public_subnets
+  vpc_id              = module.vpc.vpc_id
 }
